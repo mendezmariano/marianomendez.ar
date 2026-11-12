@@ -2,9 +2,11 @@
 
 Actualizado el 12 de noviembre de 2026. La tabla de verificación del 6 de noviembre se conserva como registro de la revisión de movimiento.
 
-El Laboratorio funciona como un blog interactivo en español. La vista local se inicia con `npm run dev` en <http://127.0.0.1:4173/>. La última revisión incorpora artículos desde archivos Markdown. La publicación se prepara en [mendezmariano/marianomendez.ar](https://github.com/mendezmariano/marianomendez.ar), con GitHub Actions y el dominio previsto `www.marianomendez.ar`.
+El Laboratorio funciona como un blog interactivo en español. Está publicado en [GitHub Pages](https://mendezmariano.github.io/marianomendez.ar/), desde el repositorio [mendezmariano/marianomendez.ar](https://github.com/mendezmariano/marianomendez.ar). La vista local se inicia con `npm run dev` en <http://127.0.0.1:4173/>. La última revisión incorpora artículos desde archivos Markdown.
 
-El 12 de noviembre se habilitó GitHub Pages. Las 44 pruebas locales pasan y los siete renders se generan correctamente. El dominio está registrado, según confirmó el usuario, pero su delegación DNS sigue pendiente. La [guía de publicación](github-pages.md) reúne los registros necesarios y la comprobación de archivos publicados.
+El 12 de noviembre se publicó el commit `686b6f7` mediante [GitHub Actions](https://github.com/mendezmariano/marianomendez.ar/actions/runs/43283819704). Las 44 pruebas pasan y los siete renders se generan correctamente. La verificación por HTTPS confirmó que los 10 archivos del sitio coinciden con `dist/`. El navegador de verificación no estaba disponible.
+
+El dominio previsto `www.marianomendez.ar` está registrado, según confirmó el usuario, pero su delegación DNS sigue pendiente. El dominio personalizado todavía no se asoció en Pages para conservar accesible la dirección inicial. La [guía de publicación](github-pages.md) reúne los registros necesarios y la comprobación de archivos publicados.
 
 La revisión interactiva en navegador y los contenidos definitivos siguen pendientes. Cada publicación web, incluso privada, requiere autorización explícita del usuario.
 

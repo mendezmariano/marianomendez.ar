@@ -2,7 +2,7 @@
 
 Un blog en español que se recorre como una aventura gráfica de estética retro. El Dr. Mendez camina por un laboratorio de ciencias de la computación con un clúster, terminales y objetos para explorar.
 
-El [estado del proyecto](docs/project-status.md), actualizado el 7 de noviembre de 2026, reúne las funciones implementadas, la verificación y los pendientes.
+El [estado del proyecto](docs/project-status.md), actualizado el 12 de noviembre de 2026, reúne las funciones implementadas, la verificación y los pendientes.
 
 ## Ejecutar
 

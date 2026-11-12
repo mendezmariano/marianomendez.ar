@@ -1,6 +1,6 @@
 # Publicar el laboratorio en GitHub Pages
 
-El repositorio de publicación es [mendezmariano/marianomendez.ar](https://github.com/mendezmariano/marianomendez.ar). El dominio principal previsto es `www.marianomendez.ar`.
+El repositorio de publicación es [mendezmariano/marianomendez.ar](https://github.com/mendezmariano/marianomendez.ar). El dominio principal previsto es `www.marianomendez.ar`. La [dirección inicial](https://mendezmariano.github.io/marianomendez.ar/) funciona mientras se prepara la delegación DNS.
 
 ## Actualizar el sitio
 
@@ -19,7 +19,8 @@ En **Settings > Pages**, la fuente de publicación debe ser **GitHub Actions**. 
 1. Creá una zona para `marianomendez.ar` en tu proveedor de DNS.
 2. Cargá los registros de la tabla siguiente en esa zona.
 3. Copiá los servidores de nombres que te asigne el proveedor.
-4. En NIC Argentina, delegá `marianomendez.ar` a esos servidores.
+4. Antes de activar la delegación, guardá `www.marianomendez.ar` como dominio personalizado en **Settings > Pages** de GitHub.
+5. En NIC Argentina, delegá `marianomendez.ar` a esos servidores.
 
 | Tipo | Nombre | Valor |
 | --- | --- | --- |
@@ -31,7 +32,7 @@ En **Settings > Pages**, la fuente de publicación debe ser **GitHub Actions**. 
 
 Si el proveedor ofrece proxy HTTP, usá el modo de DNS sin proxy durante la configuración. El CNAME apunta al usuario de GitHub y no incluye el nombre del repositorio. Con ambos nombres configurados, GitHub redirige `marianomendez.ar` al dominio principal `www.marianomendez.ar`.
 
-Cuando el DNS sea público, guardá `www.marianomendez.ar` como dominio personalizado en **Settings > Pages**. Esperá a que GitHub emita el certificado y activá **Enforce HTTPS** cuando esté disponible.
+Cuando el DNS sea público, esperá a que GitHub emita el certificado. Activá **Enforce HTTPS** cuando esté disponible.
 
 La [guía oficial de dominios personalizados](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site) documenta los registros y la configuración de HTTPS.
 
