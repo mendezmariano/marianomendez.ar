@@ -2,11 +2,11 @@
 
 Actualizado el 12 de noviembre de 2026. La tabla de verificación del 6 de noviembre se conserva como registro de la revisión de movimiento.
 
-El Laboratorio funciona como un blog interactivo en español. Está publicado en [GitHub Pages](https://mendezmariano.github.io/marianomendez.ar/), desde el repositorio [mendezmariano/marianomendez.ar](https://github.com/mendezmariano/marianomendez.ar). La vista local se inicia con `npm run dev` en <http://127.0.0.1:4173/>. La última revisión incorpora artículos desde archivos Markdown.
+El Laboratorio funciona como un blog interactivo en español. Se publicó en GitHub Pages desde el repositorio [mendezmariano/marianomendez.ar](https://github.com/mendezmariano/marianomendez.ar). GitHub tiene asociado `www.marianomendez.ar` como dominio principal, con el acceso por ese dominio pendiente del DNS. La vista local se inicia con `npm run dev` en <http://127.0.0.1:4173/>. La última revisión incorpora artículos desde archivos Markdown.
 
 El 12 de noviembre se publicó el commit `686b6f7` mediante [GitHub Actions](https://github.com/mendezmariano/marianomendez.ar/actions/runs/43283819704). Las 44 pruebas pasan y los siete renders se generan correctamente. La verificación por HTTPS confirmó que los 10 archivos del sitio coinciden con `dist/`. El navegador de verificación no estaba disponible.
 
-El dominio previsto `www.marianomendez.ar` está registrado, según confirmó el usuario. Se eligió Cloudflare con el plan Free para administrar el DNS. Falta agregar el dominio en la cuenta de Cloudflare, obtener sus dos servidores de nombres y completar la delegación en NIC Argentina. El dominio personalizado todavía no se asoció en Pages para conservar accesible la dirección inicial. La [guía de publicación](github-pages.md) reúne los pasos, el [archivo de importación DNS](cloudflare-dns.txt) y la comprobación de archivos publicados.
+El dominio está registrado, según confirmó el usuario. La zona de Cloudflare usa `sandy.ns.cloudflare.com` y `titan.ns.cloudflare.com`, verificados directamente en ambos servidores. La última consulta no encontró los cuatro registros A ni el CNAME de `www`, y la resolución pública todavía devuelve `NXDOMAIN`. Falta importar los registros y completar la delegación en NIC Argentina. GitHub Pages ya tiene asociado el dominio y espera poder emitir el certificado HTTPS. La [guía de publicación](github-pages.md) reúne los pasos, el [archivo de importación DNS](cloudflare-dns.txt) y la comprobación de archivos publicados.
 
 La revisión interactiva en navegador y los contenidos definitivos siguen pendientes. Cada publicación web, incluso privada, requiere autorización explícita del usuario.
 

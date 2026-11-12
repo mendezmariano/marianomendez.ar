@@ -1,6 +1,6 @@
 # Publicar el laboratorio en GitHub Pages
 
-El repositorio de publicación es [mendezmariano/marianomendez.ar](https://github.com/mendezmariano/marianomendez.ar). El dominio principal previsto es `www.marianomendez.ar`. La [dirección inicial](https://mendezmariano.github.io/marianomendez.ar/) funciona mientras se prepara la delegación DNS.
+El repositorio de publicación es [mendezmariano/marianomendez.ar](https://github.com/mendezmariano/marianomendez.ar). GitHub Pages ya tiene asociado `www.marianomendez.ar` como dominio principal. Falta completar los registros en Cloudflare y la delegación en NIC Argentina para que el dominio sea accesible. El certificado HTTPS sigue pendiente del DNS.
 
 ## Actualizar el sitio
 
@@ -16,7 +16,7 @@ En **Settings > Pages**, la fuente de publicación debe ser **GitHub Actions**. 
 
 ## Configurar Cloudflare
 
-El proveedor elegido es Cloudflare con el plan Free. El dominio sigue registrado en NIC Argentina y el sitio se aloja en GitHub Pages.
+El proveedor elegido es Cloudflare con el plan Free. El dominio sigue registrado en NIC Argentina y el sitio se aloja en GitHub Pages. La zona de Cloudflare ya existe y usa `sandy.ns.cloudflare.com` y `titan.ns.cloudflare.com`, confirmados mediante consultas directas a ambos servidores.
 
 1. Ingresá a [Cloudflare](https://dash.cloudflare.com/) o creá tu cuenta.
 2. Usá **Onboard a domain** para agregar `marianomendez.ar`.
@@ -28,6 +28,8 @@ El proveedor elegido es Cloudflare con el plan Free. El dominio sigue registrado
 
 El archivo usa el formato de importación de Cloudflare y fija `cf-proxied:false` para cada registro. La [documentación de importación](https://developers.cloudflare.com/dns/manage-dns-records/how-to/import-and-export/) describe ese atributo.
 
+Si el enlace muestra el contenido del archivo, guardalo como `cloudflare-dns.txt` y seleccioná ese archivo en el importador. También podés cargar las cinco filas de la tabla mediante **Add record**.
+
 El CNAME apunta al usuario de GitHub y no incluye el nombre del repositorio.
 
 | Tipo | Nombre | Valor |
@@ -38,15 +40,24 @@ El CNAME apunta al usuario de GitHub y no incluye el nombre del repositorio.
 | A | `@` | `185.199.110.153` |
 | A | `@` | `185.199.111.153` |
 
-Los servidores de nombres son específicos del dominio. Usá exactamente los que muestre Cloudflare. La [guía de alta de Cloudflare](https://developers.cloudflare.com/dns/zone-setups/full-setup/setup/) explica dónde encontrarlos.
+Los servidores asignados a este dominio son:
+
+```text
+sandy.ns.cloudflare.com
+titan.ns.cloudflare.com
+```
+
+La [guía de alta de Cloudflare](https://developers.cloudflare.com/dns/zone-setups/full-setup/setup/) explica dónde encontrar los servidores asignados.
 
 ## Delegar el dominio en NIC Argentina
 
-1. Antes de activar la delegación, guardá `www.marianomendez.ar` como dominio personalizado en **Settings > Pages** del repositorio de GitHub.
+1. Comprobá que los cinco registros estén cargados en Cloudflare. GitHub Pages ya tiene guardado `www.marianomendez.ar` como dominio personalizado.
 2. Ingresá a NIC Argentina con la cuenta titular de `marianomendez.ar`.
-3. Abrí la configuración de delegación del dominio.
-4. Cargá los dos servidores de nombres asignados por Cloudflare.
-5. Guardá la delegación.
+3. En la lista de dominios, abrí **Delegar** para `marianomendez.ar`.
+4. Usá **Agregar una nueva delegación** para cargar `sandy.ns.cloudflare.com` y `titan.ns.cloudflare.com`.
+5. Guardá los servidores y pulsá **Ejecutar Cambios**.
+
+La [guía de delegación de NIC Argentina](https://nic.ar/es/ayuda/instructivos/delegacion-de-dominios) describe esos pasos.
 
 Con ambos nombres configurados, GitHub redirige `marianomendez.ar` al dominio principal `www.marianomendez.ar`.
 
@@ -64,7 +75,7 @@ npm run verify:deployment -- https://www.marianomendez.ar/
 
 El último comando compara por SHA-256 la portada, los módulos, la hoja de estilos y los recursos publicados con sus versiones locales. Un error HTTP, de DNS o una diferencia de contenido hace fallar la comprobación. No sustituye la revisión interactiva en navegador.
 
-Mientras el dominio personalizado todavía no esté asociado en Pages, podés verificar la URL inicial con:
+La dirección inicial de GitHub Pages redirige al dominio personalizado una vez asociado. La siguiente comprobación también depende entonces de que el DNS del dominio funcione:
 
 ```sh
 npm run verify:deployment -- https://mendezmariano.github.io/marianomendez.ar/
