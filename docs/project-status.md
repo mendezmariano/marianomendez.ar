@@ -6,7 +6,7 @@ El Laboratorio funciona como un blog interactivo en español. Está publicado en
 
 El 12 de noviembre se publicó el commit `686b6f7` mediante [GitHub Actions](https://github.com/mendezmariano/marianomendez.ar/actions/runs/43283819704). Las 44 pruebas pasan y los siete renders se generan correctamente. La verificación por HTTPS confirmó que los 10 archivos del sitio coinciden con `dist/`. El navegador de verificación no estaba disponible.
 
-El dominio previsto `www.marianomendez.ar` está registrado, según confirmó el usuario, pero su delegación DNS sigue pendiente. El dominio personalizado todavía no se asoció en Pages para conservar accesible la dirección inicial. La [guía de publicación](github-pages.md) reúne los registros necesarios y la comprobación de archivos publicados.
+El dominio previsto `www.marianomendez.ar` está registrado, según confirmó el usuario. Se eligió Cloudflare con el plan Free para administrar el DNS. Falta agregar el dominio en la cuenta de Cloudflare, obtener sus dos servidores de nombres y completar la delegación en NIC Argentina. El dominio personalizado todavía no se asoció en Pages para conservar accesible la dirección inicial. La [guía de publicación](github-pages.md) reúne los pasos, el [archivo de importación DNS](cloudflare-dns.txt) y la comprobación de archivos publicados.
 
 La revisión interactiva en navegador y los contenidos definitivos siguen pendientes. Cada publicación web, incluso privada, requiere autorización explícita del usuario.
 

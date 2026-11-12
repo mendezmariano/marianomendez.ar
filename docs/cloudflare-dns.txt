@@ -1,0 +1,10 @@
+; Importar en Cloudflare para marianomendez.ar.
+; Registros web de GitHub Pages, sin proxy.
+$ORIGIN marianomendez.ar.
+$TTL 300
+
+@ IN A 185.199.108.153 ; cf_tags=cf-proxied:false
+@ IN A 185.199.109.153 ; cf_tags=cf-proxied:false
+@ IN A 185.199.110.153 ; cf_tags=cf-proxied:false
+@ IN A 185.199.111.153 ; cf_tags=cf-proxied:false
+www IN CNAME mendezmariano.github.io. ; cf_tags=cf-proxied:false

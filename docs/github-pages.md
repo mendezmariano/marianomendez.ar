@@ -14,13 +14,21 @@ El flujo genera los artículos, ejecuta las pruebas y valida el dibujo. Si todas
 
 En **Settings > Pages**, la fuente de publicación debe ser **GitHub Actions**. El dominio personalizado se configura allí. `dist/CNAME` conserva el nombre del dominio como referencia; GitHub ignora ese archivo cuando publica mediante un flujo de Actions.
 
-## Delegar el dominio
+## Configurar Cloudflare
 
-1. Creá una zona para `marianomendez.ar` en tu proveedor de DNS.
-2. Cargá los registros de la tabla siguiente en esa zona.
-3. Copiá los servidores de nombres que te asigne el proveedor.
-4. Antes de activar la delegación, guardá `www.marianomendez.ar` como dominio personalizado en **Settings > Pages** de GitHub.
-5. En NIC Argentina, delegá `marianomendez.ar` a esos servidores.
+El proveedor elegido es Cloudflare con el plan Free. El dominio sigue registrado en NIC Argentina y el sitio se aloja en GitHub Pages.
+
+1. Ingresá a [Cloudflare](https://dash.cloudflare.com/) o creá tu cuenta.
+2. Usá **Onboard a domain** para agregar `marianomendez.ar`.
+3. Elegí el plan **Free**.
+4. En **DNS > Records**, abrí **Import and Export**.
+5. Importá [cloudflare-dns.txt](cloudflare-dns.txt).
+6. Comprobá que aparezcan los cinco registros de la tabla y que todos indiquen **DNS only**, con la nube gris.
+7. Copiá los dos servidores de nombres que Cloudflare asigne al dominio. Aparecen durante el alta y en **Overview**.
+
+El archivo usa el formato de importación de Cloudflare y fija `cf-proxied:false` para cada registro. La [documentación de importación](https://developers.cloudflare.com/dns/manage-dns-records/how-to/import-and-export/) describe ese atributo.
+
+El CNAME apunta al usuario de GitHub y no incluye el nombre del repositorio.
 
 | Tipo | Nombre | Valor |
 | --- | --- | --- |
@@ -30,7 +38,17 @@ En **Settings > Pages**, la fuente de publicación debe ser **GitHub Actions**. 
 | A | `@` | `185.199.110.153` |
 | A | `@` | `185.199.111.153` |
 
-Si el proveedor ofrece proxy HTTP, usá el modo de DNS sin proxy durante la configuración. El CNAME apunta al usuario de GitHub y no incluye el nombre del repositorio. Con ambos nombres configurados, GitHub redirige `marianomendez.ar` al dominio principal `www.marianomendez.ar`.
+Los servidores de nombres son específicos del dominio. Usá exactamente los que muestre Cloudflare. La [guía de alta de Cloudflare](https://developers.cloudflare.com/dns/zone-setups/full-setup/setup/) explica dónde encontrarlos.
+
+## Delegar el dominio en NIC Argentina
+
+1. Antes de activar la delegación, guardá `www.marianomendez.ar` como dominio personalizado en **Settings > Pages** del repositorio de GitHub.
+2. Ingresá a NIC Argentina con la cuenta titular de `marianomendez.ar`.
+3. Abrí la configuración de delegación del dominio.
+4. Cargá los dos servidores de nombres asignados por Cloudflare.
+5. Guardá la delegación.
+
+Con ambos nombres configurados, GitHub redirige `marianomendez.ar` al dominio principal `www.marianomendez.ar`.
 
 Cuando el DNS sea público, esperá a que GitHub emita el certificado. Activá **Enforce HTTPS** cuando esté disponible.
 
