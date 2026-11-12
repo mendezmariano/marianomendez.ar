@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="Entrá al laboratorio del Dr. Mariano Mendez. Un blog de ciencias de la computación para explorar, leer y descubrir, píxel a píxel.">
+    <title>El laboratorio · Dr. Mariano Mendez</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#quick-access">Ir a los contenidos</a>
+    <div class="page-shell">
+      <header class="site-header">
+        <h1 id="page-title">El Laboratorio</h1>
+      </header>
+      <main>
+        <section class="game-frame" aria-label="Laboratorio interactivo">
+          <div class="scene" id="scene" tabindex="0" aria-label="Escena del laboratorio. Flechas para caminar; arrastrá horizontalmente para recorrer la vista.">
+            <canvas id="lab-canvas" width="1536" height="704" role="img" aria-label="Laboratorio ilustrado con biblioteca, clúster, dos terminales y mesa de experimentos. Mariano lleva bata blanca y una máscara de anteojos negros, nariz postiza y bigote. Tiene vistas de frente, espalda y perfil."></canvas>
+            <div class="hotspots" id="hotspots"></div>
+            <div class="speech hidden" id="speech" aria-live="polite"></div>
+            <button class="scene-pan scene-pan-left" id="pan-left" aria-label="Desplazar laboratorio a la izquierda">‹</button>
+            <button class="scene-pan scene-pan-right" id="pan-right" aria-label="Desplazar laboratorio a la derecha">›</button>
+          </div>
+          <div class="scene-controls">
+            <div class="verbs" role="group" aria-label="Acciones del personaje">
+              <button id="look-button" aria-pressed="false"><span aria-hidden="true">◎</span> Mirar</button>
+              <button id="greet-button"><span aria-hidden="true">✋</span> Saludar</button>
+            </div>
+            <div class="camera-controls">
+              <label for="camera-position" id="camera-location">SALA CENTRAL · CÓMPUTO</label>
+              <input id="camera-position" type="range" min="0" max="768" step="1" value="384" aria-label="Posición de la vista del laboratorio">
+              <div class="camera-ends" aria-hidden="true"><span>BIBLIOTECA</span><span>EXPERIMENTOS</span></div>
+            </div>
+          </div>
+        </section>
+        <div class="below-scene"><p><span aria-hidden="true">⌖</span> Hacé clic para explorar. Arrastrá la escena para recorrer el laboratorio.</p><div class="scene-options"><button id="help-button">Cómo explorar <span>?</span></button><button id="sound-toggle" class="sound-button" aria-pressed="false" aria-label="Activar sonido ambiental"><span aria-hidden="true">♫</span><span id="sound-label">SONIDO OFF</span></button></div></div>
+        <nav id="quick-access" class="quick-access" aria-label="Accesos directos"><span>¿VENÍS A LEER?</span><button data-open="blog">Abrir bitácora <span>↗</span></button><button data-open="cv">Consultar currículum <span>↗</span></button><span class="quick-end">SIN ACERTIJOS. PROMETIDO.</span></nav>
+      </main>
+      <footer><span>© <span id="year">2026</span> Mariano Mendez</span><span>HECHO DE CURIOSIDAD Y PÍXELES <span class="footer-star">✦</span></span><span>FIN DE LA PANTALLA, NO DE LA AVENTURA.</span></footer>
+    </div>
+    <dialog id="terminal-dialog" class="terminal-dialog" aria-labelledby="terminal-title">
+      <div class="terminal-titlebar"><span class="terminal-lights" aria-hidden="true"><i></i><i></i><i></i></span><span id="terminal-title">MENDEZ-OS</span><button id="close-terminal" aria-label="Cerrar terminal">ESC <span>×</span></button></div>
+      <div class="terminal-body" id="terminal-body"></div>
+    </dialog>
+    <dialog id="help-dialog" class="help-dialog" aria-labelledby="help-title"><button class="help-close" id="close-help" aria-label="Cerrar ayuda">×</button><p class="eyebrow">MANUAL DEL VISITANTE</p><h2 id="help-title">Tu primera visita.</h2><p>El laboratorio se explora como una aventura gráfica.</p><ul><li>Hacé clic en una computadora para que Mariano se acerque y abra su contenido.</li><li>Seleccioná Mirar y después un objeto para que Mariano lo describa.</li><li>Saludar hace que Mariano se vuelva hacia vos y te salude con la mano.</li><li>Recorré el laboratorio con los botones laterales, la barra de posición, el arrastre horizontal o Shift + rueda. Las flechas del teclado hacen caminar al personaje al enfocar la escena.</li><li>Hacé clic en el suelo para caminar. Las flechas izquierda y derecha lo muestran de perfil; arriba, de espaldas; abajo, de frente.</li><li>Los accesos directos a la bitácora y al currículum abren el contenido al instante.</li></ul><p>Usá Tab y Enter para explorar con teclado, y Escape para cerrar las ventanas. El sonido es opcional.</p><button class="primary-button" id="start-exploring">Volver al laboratorio →</button></dialog>
+    <noscript><div class="no-js">Activá JavaScript para explorar el laboratorio. Este sitio contiene la bitácora y el currículum del Dr. Mariano Mendez.</div></noscript>
+  </body>
+</html>

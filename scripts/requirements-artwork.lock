@@ -1,0 +1,2 @@
+# Optional reference-analysis dependency; no Python packages are needed to serve the site.
+Pillow==10.2.0
