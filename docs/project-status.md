@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-Actualizado el 12 de noviembre de 2026. La tabla de verificación del 6 de noviembre se conserva como registro de la revisión de movimiento.
+Actualizado el 13 de noviembre de 2026. La tabla de verificación del 6 de noviembre se conserva como registro de la revisión de movimiento.
 
 El Laboratorio funciona como un blog interactivo en español. Se publicó en GitHub Pages desde el repositorio [mendezmariano/marianomendez.ar](https://github.com/mendezmariano/marianomendez.ar). GitHub tiene asociado `www.marianomendez.ar` como dominio principal, con el acceso por ese dominio pendiente del DNS. La vista local se inicia con `npm run dev` en <http://127.0.0.1:4173/>. La última revisión incorpora artículos desde archivos Markdown.
 
@@ -9,6 +9,12 @@ El 12 de noviembre se publicó el commit `686b6f7` mediante [GitHub Actions](htt
 El dominio está registrado, según confirmó el usuario. La zona de Cloudflare usa `sandy.ns.cloudflare.com` y `titan.ns.cloudflare.com`, verificados directamente en ambos servidores. La última consulta no encontró los cuatro registros A ni el CNAME de `www`, y la resolución pública todavía devuelve `NXDOMAIN`. Falta importar los registros y completar la delegación en NIC Argentina. GitHub Pages ya tiene asociado el dominio y espera poder emitir el certificado HTTPS. La [guía de publicación](github-pages.md) reúne los pasos, el [archivo de importación DNS](cloudflare-dns.txt) y la comprobación de archivos publicados.
 
 La revisión interactiva en navegador y los contenidos definitivos siguen pendientes. Cada publicación web, incluso privada, requiere autorización explícita del usuario.
+
+## Libro de memoria virtual
+
+El 13 de noviembre se incorporó un libro dorado "Memoria virtual" en la segunda repisa de la biblioteca. Abre <https://mendezmariano.github.io/memoria-virtual/> en otra pestaña. El enlace es HTML y se puede activar con teclado. Mirar describe el libro sin abrir el enlace. El usuario autorizó su publicación en GitHub Pages.
+
+Verificación: `npm run check` aprueba las 47 pruebas y `node scripts/render-scene.mjs` genera las siete vistas con coordenadas y colores válidos. Las tres pruebas nuevas cubren el enlace, la cancelación de una visita pendiente a una terminal, Mirar y la separación de los controles de cámara y teclado. No hay navegador conectado para comprobar la interacción real.
 
 ## Funciones implementadas
 
@@ -86,6 +92,7 @@ Los comandos se ejecutan desde `mendez-lab/`.
 
 ## Referencias visuales
 
+- [Biblioteca con el libro de memoria virtual](west-preview.png).
 - [Vista central del laboratorio](scene-preview.png).
 - [Frente, espalda y perfiles del personaje](character-preview.png).
 - [Poses de caminata y saludo](walk-preview.png).

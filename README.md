@@ -2,7 +2,7 @@
 
 Un blog en español que se recorre como una aventura gráfica de estética retro. El Dr. Mendez camina por un laboratorio de ciencias de la computación con un clúster, terminales y objetos para explorar.
 
-El [estado del proyecto](docs/project-status.md), actualizado el 12 de noviembre de 2026, reúne las funciones implementadas, la verificación y los pendientes.
+El [estado del proyecto](docs/project-status.md), actualizado el 13 de noviembre de 2026, reúne las funciones implementadas, la verificación y los pendientes.
 
 ## Ejecutar
 
@@ -28,6 +28,7 @@ El sitio está completo en `dist/` y se puede servir desde cualquier alojamiento
 - Hacé clic en la terminal central para leer la bitácora.
 - Usá la computadora de la derecha para abrir el currículum en formato terminal.
 - Hacé clic en el clúster, la pizarra o la planta para conocer sus detalles.
+- En la biblioteca, el libro dorado "Memoria virtual" de la segunda repisa abre [el sitio de memoria virtual](https://mendezmariano.github.io/memoria-virtual/) en otra pestaña. Con Mirar, Mariano lo describe.
 - Los accesos directos permiten leer sin esperar la caminata.
 - Usá Tab y Enter para navegar con teclado. Escape cierra las ventanas.
 

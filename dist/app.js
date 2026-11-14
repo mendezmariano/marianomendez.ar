@@ -17,25 +17,30 @@ let looking = false;
 let pointer = null;
 let dragged = false;
 for (const [id, target] of Object.entries(targets)) {
-  const button = document.createElement('button');
-  button.className = 'hotspot';
-  button.dataset.target = id;
-  button.setAttribute('aria-label', `Explorar ${target.label}`);
+  const control = document.createElement(target.href ? 'a' : 'button');
+  control.className = 'hotspot';
+  control.dataset.target = id;
+  control.setAttribute('aria-label', target.href ? `Abrir ${target.label} (en otra pestaña)` : `Explorar ${target.label}`);
+  if (target.href) {
+    control.href = target.href;
+    control.target = '_blank';
+    control.rel = 'noopener noreferrer';
+  }
   const label = document.createElement('span');
   label.className = 'hotspot-label';
-  label.textContent = target.label;
-  button.append(label);
-  hotspots.append(button);
+  label.textContent = target.href ? `${target.label} ↗` : target.label;
+  control.append(label);
+  hotspots.append(control);
 }
-const objectButtons = [...hotspots.querySelectorAll('[data-target]')];
+const objectControls = [...hotspots.querySelectorAll('[data-target]')];
 function updateCameraControls() {
-  for (const button of objectButtons) {
-    const [x, y, width, height] = targets[button.dataset.target].bounds;
-    button.hidden = x + width <= camera.x || x >= camera.x + WIDTH;
-    button.style.left = `${(x - camera.x) / WIDTH * 100}%`;
-    button.style.top = `${y / HEIGHT * 100}%`;
-    button.style.width = `${width / WIDTH * 100}%`;
-    button.style.height = `${height / HEIGHT * 100}%`;
+  for (const control of objectControls) {
+    const [x, y, width, height] = targets[control.dataset.target].bounds;
+    control.hidden = x + width <= camera.x || x >= camera.x + WIDTH;
+    control.style.left = `${(x - camera.x) / WIDTH * 100}%`;
+    control.style.top = `${y / HEIGHT * 100}%`;
+    control.style.width = `${width / WIDTH * 100}%`;
+    control.style.height = `${height / HEIGHT * 100}%`;
   }
   cameraRange.value = String(Math.round(camera.x));
   $('#pan-left').disabled = camera.x <= 0;
@@ -131,8 +136,16 @@ async function toggleSound(){
   }catch{soundEnabled=false;say('El sonido no está disponible en este navegador. Podés seguir explorando.');}
 }
 
-document.querySelectorAll('[data-target]').forEach(button=>{
-  button.addEventListener('click',()=>interact(button.dataset.target,button));
+document.querySelectorAll('[data-target]').forEach(control => {
+  control.addEventListener('click', event => {
+    if (targets[control.dataset.target].href && !looking) {
+      stopWalking();
+      speech.classList.add('hidden');
+      return;
+    }
+    event.preventDefault();
+    interact(control.dataset.target, control);
+  });
 });
 document.querySelectorAll('[data-open]').forEach(button=>button.addEventListener('click',()=>openTerminal(button.dataset.open,button)));
 lookButton.addEventListener('click', () => {
@@ -162,7 +175,7 @@ scene.addEventListener('wheel', event => {
   moveCamera(camera.x + delta * units * WIDTH / bounds.width);
 }, { passive: false });
 scene.addEventListener('pointerdown', event => {
-  if (event.target.closest('button') || event.button !== 0) return;
+  if (event.target.closest('button, a') || event.button !== 0) return;
   dragged = false;
   pointer = { id: event.pointerId, x: event.clientX, y: event.clientY, cameraX: camera.x };
   scene.setPointerCapture(event.pointerId);
@@ -186,7 +199,7 @@ scene.addEventListener('pointerup', releasePointer);
 scene.addEventListener('pointercancel', releasePointer);
 scene.addEventListener('click', event => {
   if (dragged) { dragged = false; return; }
-  if (event.target.closest('button')) return;
+  if (event.target.closest('button, a')) return;
   const point = scenePoint(event.clientX, event.clientY, scene.getBoundingClientRect(), camera);
   if (looking) {
     setLooking(false);
@@ -206,7 +219,7 @@ $('#close-help').addEventListener('click',()=>help.close());$('#start-exploring'
 $('#sound-toggle').addEventListener('click',toggleSound);
 for(const dialog of [terminal,help])dialog.addEventListener('click',event=>{if(event.target===dialog){const bounds=dialog.getBoundingClientRect();if(event.clientX<bounds.left||event.clientX>bounds.right||event.clientY<bounds.top||event.clientY>bounds.bottom)dialog.close();}});
 window.addEventListener('keydown',event=>{
-  if(terminal.open||help.open||event.altKey||event.ctrlKey||event.metaKey||event.target.closest('input, textarea, select, button, [contenteditable]'))return;
+  if(terminal.open||help.open||event.altKey||event.ctrlKey||event.metaKey||event.target.closest('input, textarea, select, button, a, [contenteditable]'))return;
   if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(event.key)){event.preventDefault();keys.add(event.key);speech.classList.add('hidden');}
 });
 window.addEventListener('keyup',event=>keys.delete(event.key));window.addEventListener('blur',()=>keys.clear());
