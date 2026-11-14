@@ -28,7 +28,7 @@ for (const [id, target] of Object.entries(targets)) {
   }
   const label = document.createElement('span');
   label.className = 'hotspot-label';
-  label.textContent = target.href ? `${target.label} ↗` : target.label;
+  label.textContent = target.label;
   control.append(label);
   hotspots.append(control);
 }

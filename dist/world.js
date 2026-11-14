@@ -8,7 +8,7 @@ export const GREETING_SECONDS = 2.6;
 export const FLOOR = Object.freeze({ left: 30, right: WORLD_WIDTH - 30, top: 286, bottom: 336 });
 export const targets = Object.freeze({
   library: { x: 172, y: 302, bounds: [75, 68, 190, 204], label: 'biblioteca', description: 'Algoritmos, sistemas y algunos libros que todavía tengo pendientes. Esta es la memoria de largo plazo del laboratorio.' },
-  memoryBook: { x: 219, y: 302, bounds: [198, 121, 42, 38], label: 'libro Memoria virtual', href: 'https://mendezmariano.github.io/memoria-virtual/', description: 'Memoria virtual. Este libro abre el sitio dedicado al tema en otra pestaña. Hacé clic de nuevo para visitarlo.' },
+  memoryBook: { x: 220, y: 302, bounds: [216, 123, 8, 36], label: 'Memoria virtual', href: 'https://mendezmariano.github.io/memoria-virtual/', description: 'Memoria virtual. Este libro abre el sitio dedicado al tema en otra pestaña. Hacé clic de nuevo para visitarlo.' },
   window: { x: 343, y: 298, bounds: [290, 55, 105, 174], label: 'ventana', description: 'Afuera sigue el mundo. De vez en cuando conviene apartar la vista de la pantalla.' },
   cluster: { x: 520, y: 300, bounds: [450, 92, 130, 183], label: 'clúster', description: 'Varias máquinas, una misma pregunta. Las luces parpadean; las respuestas están en proceso.' },
   blog: { x: 695, y: 300, bounds: [631, 149, 94, 100], label: 'terminal de la bitácora', description: 'La terminal principal del clúster. Acá viven las ideas, los experimentos y la bitácora. Podés abrirla haciendo clic sin el modo Mirar.' },

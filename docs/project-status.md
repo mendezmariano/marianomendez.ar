@@ -2,17 +2,21 @@
 
 Actualizado el 13 de noviembre de 2026. La tabla de verificación del 6 de noviembre se conserva como registro de la revisión de movimiento.
 
-El Laboratorio funciona como un blog interactivo en español. Se publicó en GitHub Pages desde el repositorio [mendezmariano/marianomendez.ar](https://github.com/mendezmariano/marianomendez.ar). GitHub tiene asociado `www.marianomendez.ar` como dominio principal, con el acceso por ese dominio pendiente del DNS. La vista local se inicia con `npm run dev` en <http://127.0.0.1:4173/>. La última revisión incorpora artículos desde archivos Markdown.
+El Laboratorio funciona como un blog interactivo en español. Se publicó en GitHub Pages desde el repositorio [mendezmariano/marianomendez.ar](https://github.com/mendezmariano/marianomendez.ar). GitHub tiene asociado `www.marianomendez.ar` como dominio principal, con acceso HTTP verificado y certificado HTTPS pendiente. La vista local se inicia con `npm run dev` en <http://127.0.0.1:4173/>. La última revisión incorpora un enlace al sitio de memoria virtual desde un libro de la biblioteca.
 
 El 12 de noviembre se publicó el commit `686b6f7` mediante [GitHub Actions](https://github.com/mendezmariano/marianomendez.ar/actions/runs/43283819704). Las 44 pruebas pasan y los siete renders se generan correctamente. La verificación por HTTPS confirmó que los 10 archivos del sitio coinciden con `dist/`. El navegador de verificación no estaba disponible.
 
-El dominio está registrado, según confirmó el usuario. La zona de Cloudflare usa `sandy.ns.cloudflare.com` y `titan.ns.cloudflare.com`, verificados directamente en ambos servidores. La última consulta no encontró los cuatro registros A ni el CNAME de `www`, y la resolución pública todavía devuelve `NXDOMAIN`. Falta importar los registros y completar la delegación en NIC Argentina. GitHub Pages ya tiene asociado el dominio y espera poder emitir el certificado HTTPS. La [guía de publicación](github-pages.md) reúne los pasos, el [archivo de importación DNS](cloudflare-dns.txt) y la comprobación de archivos publicados.
+El dominio está registrado, según confirmó el usuario. La zona de Cloudflare usa `sandy.ns.cloudflare.com` y `titan.ns.cloudflare.com`, verificados anteriormente en ambos servidores. El 13 de noviembre `www.marianomendez.ar` resolvió hacia `mendezmariano.github.io` y las direcciones de GitHub Pages. GitHub informa el dominio como verificado, sin certificado HTTPS asignado. La comprobación HTTPS falla porque el certificado servido no incluye `www.marianomendez.ar`; el contenido se verificó por HTTP. La [guía de publicación](github-pages.md) conserva los pasos de configuración, el [archivo de importación DNS](cloudflare-dns.txt) y la comprobación de archivos publicados.
 
 La revisión interactiva en navegador y los contenidos definitivos siguen pendientes. Cada publicación web, incluso privada, requiere autorización explícita del usuario.
 
 ## Libro de memoria virtual
 
 El 13 de noviembre se incorporó un libro dorado "Memoria virtual" en la segunda repisa de la biblioteca. Abre <https://mendezmariano.github.io/memoria-virtual/> en otra pestaña. El enlace es HTML y se puede activar con teclado. Mirar describe el libro sin abrir el enlace. El usuario autorizó su publicación en GitHub Pages.
+
+El commit `d3a5306` se publicó mediante [GitHub Actions](https://github.com/mendezmariano/marianomendez.ar/actions/runs/43535252417), con las etapas de comprobación y despliegue aprobadas. `npm run verify:deployment -- http://www.marianomendez.ar/` confirmó que los 10 archivos publicados coincidían con `dist/` por SHA-256.
+
+Ajuste posterior autorizado por el usuario: el libro muestra únicamente un lomo dorado entre los demás libros. El título "Memoria virtual" aparece al pasar el cursor o al enfocar el enlace con el teclado.
 
 Verificación: `npm run check` aprueba las 47 pruebas y `node scripts/render-scene.mjs` genera las siete vistas con coordenadas y colores válidos. Las tres pruebas nuevas cubren el enlace, la cancelación de una visita pendiente a una terminal, Mirar y la separación de los controles de cámara y teclado. No hay navegador conectado para comprobar la interacción real.
 
@@ -88,7 +92,7 @@ Los comandos se ejecutan desde `mendez-lab/`.
 1. Revisar en navegador de escritorio y móvil la caminata, los giros, el saludo y el desplazamiento de cámara. Comprobar las terminales, el foco de teclado y el sonido.
 2. Validar visualmente el personaje y la máscara con el usuario. La revisión automática no confirma la semejanza con las referencias.
 3. Reemplazar los tres posts de ejemplo en `content/posts/` y completar formación, experiencia, publicaciones y contacto con datos reales en `dist/content.js`.
-4. Completar la delegación DNS y la configuración del dominio personalizado en GitHub Pages. La publicación actual fue solicitada por el usuario el 12 de noviembre de 2026.
+4. Completar el certificado HTTPS del dominio personalizado en GitHub Pages. El DNS y el acceso HTTP se comprobaron el 13 de noviembre de 2026.
 
 ## Referencias visuales
 

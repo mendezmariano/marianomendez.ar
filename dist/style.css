@@ -42,6 +42,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--yellow); outlin
 .hotspots { position: absolute; inset: 0; pointer-events: none; }
 .hotspot { position: absolute; pointer-events: auto; z-index: 2; padding: 0; cursor: pointer; }
 .hotspot[data-target="memoryBook"] { z-index: 3; }
+.hotspot[data-target="memoryBook"] .hotspot-label { text-transform: none; }
 .hotspot:hover, .hotspot:focus-visible { outline: 2px dashed var(--white, #fff); outline-offset: 3px; }
 .hotspot-label { display: none; position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); font: 10px/1.5 var(--pixel); padding: 5px 7px; white-space: nowrap; background: #000; color: var(--yellow); border: 1px solid var(--yellow); }
 .hotspot:hover .hotspot-label, .hotspot:focus-visible .hotspot-label { display: block; }
@@ -165,7 +166,7 @@ dialog::backdrop { background: #000d; }
 }
 
 @media (hover: none) {
-  [data-target="blog"] .hotspot-label, [data-target="cv"] .hotspot-label, [data-target="memoryBook"] .hotspot-label { display: block; }
+  [data-target="blog"] .hotspot-label, [data-target="cv"] .hotspot-label { display: block; }
 }
 
 @media (prefers-reduced-motion: reduce) {
