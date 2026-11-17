@@ -104,13 +104,27 @@ function showPost(id){
 }
 function showCV(){
   $('#terminal-title').textContent='MENDEZ-OS / CURRICULUM VITAE';
-  body.innerHTML=`<p class="terminal-prompt"><b>visitante@mendez</b>:~$ cat curriculum.txt</p><h2>${escapeHTML(profile.name)}</h2><dl class="cv-grid"><dt>ÁREA</dt><dd>${escapeHTML(profile.field)}</dd><dt>ESTADO</dt><dd>Perfil en preparación</dd></dl>${profile.sections.map(section=>`<section class="cv-section"><h3>${escapeHTML(section.title)}</h3><p>${escapeHTML(section.text)}</p></section>`).join('')}<form class="terminal-form" id="command-form"><label for="command-input">visitante@mendez:~$</label><input id="command-input" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Escribí ayuda" aria-label="Comando de terminal"><button type="submit" aria-label="Ejecutar comando">↵</button></form><pre class="command-output" id="command-output" aria-live="polite"></pre><p class="terminal-footer">Comandos: ayuda · perfil · formacion · experiencia · publicaciones · limpiar · salir</p>`;
+  const commands = ['ayuda', ...profile.sections.map(section => section.id), 'limpiar', 'salir'];
+  const date = profile.documentDate?.split('-').reverse().join('/');
+  body.innerHTML=`<p class="terminal-prompt"><b>visitante@mendez</b>:~$ cat curriculum.txt</p><h2>${escapeHTML(profile.name)}</h2><dl class="cv-grid">${profile.field?`<dt>ÁREA</dt><dd>${escapeHTML(profile.field)}</dd>`:''}${date?`<dt>FECHA DEL CV</dt><dd>${escapeHTML(date)}</dd>`:''}</dl><div class="cv-navigation" role="group" aria-label="Secciones del currículum">${profile.sections.map(section=>`<button type="button" data-cv-section="${escapeHTML(section.id)}" aria-pressed="false">${escapeHTML(section.title)}</button>`).join('')}</div><form class="terminal-form" id="command-form"><label for="command-input">visitante@mendez:~$</label><input id="command-input" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Escribí ayuda" aria-label="Comando de terminal"><button type="submit" aria-label="Ejecutar comando">↵</button></form><pre class="command-output" id="command-output" aria-live="polite"></pre><section class="cv-section" id="cv-content" aria-live="polite"></section><p class="terminal-footer">Comandos: ${commands.map(escapeHTML).join(' · ')}</p>`;
+  const sectionButtons = [...body.querySelectorAll('[data-cv-section]')];
+  function showSection(section) {
+    $('#cv-content').innerHTML = `<h3>${escapeHTML(section.title)}</h3>${section.paragraphs.map(paragraph => `<p>${escapeHTML(paragraph)}</p>`).join('')}`;
+    for (const button of sectionButtons) button.setAttribute('aria-pressed', String(button.dataset.cvSection === section.id));
+  }
+  for (const button of sectionButtons) button.addEventListener('click', () => {
+    showSection(profile.sections.find(section => section.id === button.dataset.cvSection));
+    $('#command-output').textContent = '';
+  });
+  showSection(profile.sections[0]);
   $('#command-form').addEventListener('submit',event=>{
     event.preventDefault();const input=$('#command-input');const command=input.value.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');input.value='';
-    const responses={ayuda:'Comandos disponibles:\nperfil, formacion, experiencia, publicaciones, limpiar, salir',perfil:`${profile.name}\n${profile.field}`,formacion:profile.sections[1].text,experiencia:profile.sections[2].text,publicaciones:profile.sections[3].text};
     if(command==='salir'){terminal.close();return;}
     const output=$('#command-output');if(command==='limpiar'){output.textContent='';return;}
-    output.textContent=responses[command]??`Comando no reconocido: ${command || '(vacío)'}. Escribí ayuda para ver las opciones.`;output.scrollIntoView({block:'nearest'});playTone(180,.035);
+    const section = profile.sections.find(item => item.id === command);
+    if (section) { showSection(section); output.textContent = ''; }
+    else output.textContent = command === 'ayuda' ? `Comandos disponibles:\n${commands.join(', ')}` : `Comando no reconocido: ${command || '(vacío)'}. Escribí ayuda para ver las opciones.`;
+    playTone(180,.035);
   });
 }
 function openTerminal(kind,trigger){

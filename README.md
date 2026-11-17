@@ -2,11 +2,11 @@
 
 Un blog en español que se recorre como una aventura gráfica de estética retro. El Dr. Mendez camina por un laboratorio de ciencias de la computación con un clúster, terminales y objetos para explorar.
 
-El [estado del proyecto](docs/project-status.md), actualizado el 13 de noviembre de 2026, reúne las funciones implementadas, la verificación y los pendientes.
+El [estado del proyecto](docs/project-status.md), actualizado el 17 de noviembre de 2026, reúne las funciones implementadas, la verificación y los pendientes.
 
 ## Ejecutar
 
-Requiere Node.js 20 o posterior. Instalá las herramientas para generar los artículos con `npm ci`. El navegador no necesita estas dependencias.
+Requiere Node.js 20 o posterior. Instalá las herramientas para generar los artículos e importar el CV con `npm ci`. El navegador no necesita estas dependencias.
 
 ```sh
 npm ci
@@ -17,7 +17,9 @@ Abrí `http://127.0.0.1:4173`. Para cambiar el puerto, usá `PORT=8080 npm run d
 
 El repositorio de publicación es [mendezmariano/marianomendez.ar](https://github.com/mendezmariano/marianomendez.ar). La [guía de GitHub Pages](docs/github-pages.md) explica la publicación automática, la delegación del dominio `www.marianomendez.ar` y su verificación.
 
-El sitio está completo en `dist/` y se puede servir desde cualquier alojamiento estático. `npm run build` prepara los artículos antes de copiar o publicar esa carpeta. `npm start` sirve la versión ya generada sin observar cambios. `.openai/hosting.json` conserva la identidad y la configuración de Sites.
+El sitio está completo en `dist/` y se puede servir desde cualquier alojamiento estático. `npm run build` importa el CV y prepara los artículos antes de copiar o publicar esa carpeta. `npm start` sirve la versión ya generada sin observar cambios. `.openai/hosting.json` conserva la identidad y la configuración de Sites.
+
+Para usar `npm run dev`, `npm run build`, `npm test` o `npm run check`, colocá el CV original en `cv/`. Ese documento se conserva localmente y no se incluye en Git. Un checkout sin el original puede servir el sitio con `npm start` y comprobarlo con `npm run check:dist`.
 
 ## Explorar
 
@@ -83,9 +85,15 @@ Agregar, editar o eliminar un `.md` actualiza la bitácora durante `npm run dev`
 
 Fuera del servidor de desarrollo, ejecutá `npm run build` para regenerar `dist/posts.js`. Ese módulo es generado: editá siempre los Markdown. La carpeta `dist/` sigue siendo suficiente para alojar el sitio; no necesita Node.js en el servidor web.
 
-Editá `dist/content.js` para completar el currículum.
+La carpeta `cv/` contiene siempre la última versión del currículum. Dejá allí un único Word exportado desde CVar. Se admite `.docx` y Word moderno con extensión `.doc`, como el archivo actual `cv_bolg.doc`. Para documentos antiguos de Word, usá Guardar como `.docx`. Los archivos temporales de Word que empiezan con `~$` se ignoran. Si hay varios CV, el importador informa el error para evitar elegir una versión equivocada.
 
-Los tres posts incluidos están marcados como ejemplos. El currículum tiene campos pendientes; no contiene credenciales ni experiencia inventadas. El encabezado muestra únicamente "El Laboratorio". Los mensajes aparecen sobre la escena y el control de sonido queda debajo.
+Con `npm run dev` activo, guardar o reemplazar el Word regenera `dist/content.js`. Recargá el navegador para ver el cambio. `npm run build`, `npm test` y `npm run check` también importan el CV. Ante un documento inválido se conserva la última generación válida. Un error al iniciar o preparar una publicación detiene el comando. No edites `dist/content.js` a mano.
+
+La terminal muestra las secciones del documento mediante botones y comandos. Conserva los textos profesionales y la fecha de generación de CVar, y elimina los encabezados repetidos entre páginas. `cv/import.json` usa `includePersonalData: false` por defecto: omite los datos personales y conserva el correo identificado como laboral. El valor `true` incluye también la sección de datos personales. El Word original nunca se copia a `dist/`.
+
+GitHub Pages usa el módulo generado y guardado en Git; no tiene acceso a la carpeta local del usuario. Antes de publicar una actualización del CV, ejecutá `npm run check` e incluí `dist/content.js` en los cambios autorizados. Cambiar el documento local no publica el sitio por sí solo.
+
+Los tres posts incluidos están marcados como ejemplos. El currículum usa los datos del Word proporcionado. El encabezado muestra únicamente "El Laboratorio". Los mensajes aparecen sobre la escena y el control de sonido queda debajo.
 
 La habitación y el personaje usan 40 colores base derivados de las referencias, con tonos adicionales para piel y bata. El suavizado añade colores intermedios en los bordes. Mariano tiene una silueta alta y delgada, bata blanca, pelo castaño y una máscara con marcos negros cuadrados, cejas postizas, nariz larga y bigote ancho. El [modelo del personaje](docs/character-preview.png) muestra frente, espalda y ambos perfiles. La caminata avanza según la distancia recorrida, con apoyo fijo del pie, flexión de rodillas y brazos en oposición. El movimiento hacia el fondo es más lento en pantalla. Su dibujo está en `drawCharacter`, dentro de `dist/scene.js`.
 
@@ -98,7 +106,9 @@ La habitación y el personaje usan 40 colores base derivados de las referencias,
 - `dist/app.js`: clics, teclado, audio y presentación de contenidos.
 - `content/posts/`: artículos Markdown. `content/post-template.md`: plantilla para nuevos artículos.
 - `dist/posts.js`: artículos generados, sin dependencias para el navegador.
-- `dist/content.js`: datos del perfil.
+- `cv/`: documento original local y política de importación en `import.json`.
+- `dist/content.js`: perfil generado desde el CV, sin dependencias para el navegador.
+- `scripts/cv.mjs`: lectura del Word con Mammoth, importación de CVar y observación de cambios.
 - `scripts/posts.mjs`: validación, conversión Markdown y observación de archivos.
 - `scripts/`: servidor, verificación y generador de la tipografía pixelada original.
 - `tests/`: pruebas de movimiento y estructura de contenido con `node:test`.
@@ -113,7 +123,7 @@ Se eligió canvas para el dibujo y HTML para controles y lectura. Una interfaz t
 npm run check
 ```
 
-Primero genera los artículos. Después verifica referencias locales, sintaxis JavaScript, conversión Markdown, metadatos, actualización al guardar, movimiento, saludo, cámara, clics con desplazamiento y respuestas del servidor estático. Las pruebas de `interactions.test.js` ejecutan los eventos de `app.js` con dobles de DOM y canvas; no sustituyen una revisión en navegador. `npm test` también regenera los artículos antes de ejecutar las pruebas.
+Primero importa el CV y genera los artículos. Después verifica referencias locales, sintaxis JavaScript, conversión Markdown, importación de Word, metadatos, actualización al guardar, movimiento, saludo, cámara, clics con desplazamiento y respuestas del servidor estático. Las pruebas de `interactions.test.js` ejecutan los eventos de `app.js` con dobles de DOM y canvas; no sustituyen una revisión en navegador. `npm test` también regenera ambos contenidos antes de ejecutar las pruebas. `npm run check:dist` comprueba la versión generada sin necesitar el Word original, como hace GitHub Actions.
 
 Para una revisión visual, abrí la página en escritorio y móvil. Probá ambas terminales, el regreso al listado, los comandos del CV, Escape, el foco del teclado y el sonido opcional.
 

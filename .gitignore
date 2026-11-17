@@ -3,3 +3,7 @@ node_modules/
 *.log
 .local/
 *.tar.gz
+# The original CV contains personal data. Publish only the generated profile.
+cv/*.[dD][oO][cC]
+cv/*.[dD][oO][cC][xX]
+cv/~$*

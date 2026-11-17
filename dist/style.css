@@ -115,7 +115,10 @@ dialog::backdrop { background: #000d; }
 .cv-grid dd { margin: 0; color: #d1dfcb; }
 .cv-section { border-top: 1px dashed #356a35; padding-top: 16px; margin-top: 16px; }
 .cv-section h3 { font-size: 11px; letter-spacing: 1px; }
-.cv-section p { font-size: 12px; color: #b2c4ab; }
+.cv-section p { font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; color: #b2c4ab; }
+.cv-navigation { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 20px; }
+.cv-navigation button { padding: 8px 10px; border: 1px solid #356a35; font-size: 11px; color: var(--green); }
+.cv-navigation button:hover, .cv-navigation button[aria-pressed="true"] { background: #18351e; border-color: var(--green); }
 .terminal-form { display: flex; align-items: center; gap: 10px; border-top: 1px solid #356a35; padding-top: 18px; margin-top: 28px; font-size: 12px; }
 .terminal-form label { color: var(--green); white-space: nowrap; }
 .terminal-form input { min-width: 0; flex: 1; background: transparent; border: 0; border-bottom: 1px solid #779977; color: var(--green); font: inherit; padding: 7px; outline-offset: 4px; }

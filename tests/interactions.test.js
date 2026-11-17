@@ -3,6 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { posts } from '../dist/posts.js';
+import { profile } from '../dist/content.js';
 
 class Element {
   constructor(tag='div') {
@@ -15,14 +16,16 @@ class Element {
   setAttribute(name,value) { this.attributes[name]=value; }
   addEventListener(name,fn) { (this.listeners[name]??=[]).push(fn); }
   emit(name,event={}) { for(const fn of this.listeners[name]??[])fn({target:this,preventDefault(){},...event}); }
-  // Only the generated buttons needed to exercise reader navigation are modeled.
+  // Generated controls and content regions needed by the readers are modeled.
   set innerHTML(value) {
     this.markup = value;
-    this.children = [...value.matchAll(/<button\b([^>]*)>/g)].map(([, attributes]) => {
-      const child = new Element('button');
+    this.children = [...value.matchAll(/<([a-z][a-z0-9-]*)\b([^>]*)>/g)].filter(([, , attributes]) => /\bid=|\bdata-post=|\bdata-cv-section=/.test(attributes)).map(([, tag, attributes]) => {
+      const child = new Element(tag);
       child.id = attributes.match(/\bid="([^"]+)"/)?.[1];
       const post = attributes.match(/data-post="([^"]+)"/)?.[1];
       if (post) child.dataset.post = post;
+      const cvSection = attributes.match(/data-cv-section="([^"]+)"/)?.[1];
+      if (cvSection) child.dataset.cvSection = cvSection;
       return child;
     });
   }
@@ -30,6 +33,7 @@ class Element {
   querySelectorAll(selector) {
     if (selector === '[data-target]') return this.children.filter(c => c.dataset.target);
     if (selector === '[data-post]') return this.children.filter(c => c.dataset.post);
+    if (selector === '[data-cv-section]') return this.children.filter(c => c.dataset.cvSection);
     if (selector.startsWith('#')) return this.children.filter(c => c.id === selector.slice(1));
     return [];
   }
@@ -199,4 +203,50 @@ test('the reader opens generated Markdown, returns to the list and restores keyb
   app.get('close-terminal').emit('click');
   assert.equal(app.get('terminal-dialog').open, false);
   assert.equal(app.quick[0].focused, true);
+});
+
+test('the CV terminal reads imported sections through buttons and accented commands', async t => {
+  const app = await loadApp(t);
+  app.quick[1].emit('click');
+  const body = app.get('terminal-body');
+  assert.equal(app.get('terminal-dialog').open, true);
+  assert.ok(body.innerHTML.includes(profile.name));
+  assert.doesNotMatch(body.innerHTML, /Perfil en preparación/);
+  const buttons = body.querySelectorAll('[data-cv-section]');
+  assert.equal(buttons.length, profile.sections.length);
+  const content = body.querySelector('#cv-content');
+  const input = body.querySelector('#command-input');
+  const form = body.querySelector('#command-form');
+  const output = body.querySelector('#command-output');
+  const escaped = value => value.replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  for (const section of profile.sections) {
+    const button = buttons.find(item => item.dataset.cvSection === section.id);
+    button.emit('click');
+    assert.equal(button.attributes['aria-pressed'], 'true');
+    assert.ok(content.innerHTML.includes(escaped(section.paragraphs[0])));
+  }
+  input.value = 'FORMACIÓN'; form.emit('submit');
+  assert.ok(content.innerHTML.includes(escaped(profile.sections.find(section => section.id === 'formacion').paragraphs[0])));
+  assert.equal(input.value, '');
+  input.value = 'ayuda'; form.emit('submit');
+  for (const section of profile.sections) assert.ok(output.textContent.includes(section.id));
+  input.value = 'desconocido'; form.emit('submit');
+  assert.match(output.textContent, /Comando no reconocido/);
+  input.value = 'limpiar'; form.emit('submit');
+  assert.equal(output.textContent, '');
+  input.value = 'salir'; form.emit('submit');
+  assert.equal(app.get('terminal-dialog').open, false);
+  assert.equal(app.quick[1].focused, true);
+});
+
+test('Word content remains text instead of executable markup in the CV terminal', async t => {
+  const original = profile.sections;
+  profile.sections = [{ id: 'perfil', title: 'Perfil <b>literal</b>', paragraphs: ['<img src=x onerror=alert(1)> & texto'] }];
+  t.after(() => { profile.sections = original; });
+  const app = await loadApp(t);
+  app.quick[1].emit('click');
+  const content = app.get('terminal-body').querySelector('#cv-content').innerHTML;
+  assert.match(content, /&lt;img src=x onerror=alert\(1\)&gt; &amp; texto/);
+  assert.match(content, /Perfil &lt;b&gt;literal&lt;\/b&gt;/);
+  assert.doesNotMatch(content, /<img|<b>/);
 });

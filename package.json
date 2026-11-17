@@ -11,7 +11,9 @@
     "start": "node scripts/serve.mjs",
     "test": "node scripts/test.mjs",
     "check": "node --experimental-vm-modules scripts/check.mjs",
-    "build": "node scripts/build-posts.mjs",
+    "build": "node scripts/build.mjs",
+    "build:posts": "node scripts/build-posts.mjs",
+    "check:dist": "node --experimental-vm-modules scripts/check.mjs",
     "verify:deployment": "node scripts/verify-deployment.mjs",
     "pretest": "npm run build",
     "precheck": "npm run build"
@@ -19,6 +21,7 @@
   "devDependencies": {
     "gray-matter": "4.0.3",
     "js-yaml": "5.5.0",
+    "mammoth": "1.13.0",
     "markdown-it": "15.0.3"
   }
 }

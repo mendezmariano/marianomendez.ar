@@ -27,8 +27,10 @@ jobs:
           cache: npm
       - name: Install development tools
         run: npm ci
-      - name: Generate articles and check the site
-        run: npm run check
+      - name: Generate articles
+        run: npm run build:posts
+      - name: Check the site with the imported CV
+        run: npm run check:dist
       - name: Validate artwork
         run: node scripts/render-scene.mjs
       - name: Upload the website

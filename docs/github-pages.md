@@ -4,13 +4,13 @@ El repositorio de publicación es [mendezmariano/marianomendez.ar](https://githu
 
 ## Actualizar el sitio
 
-1. Editá los artículos en `content/posts/` y el perfil en `dist/content.js`.
+1. Editá los artículos en `content/posts/` y reemplazá el CV de CVar en `cv/` cuando corresponda.
 2. Ejecutá `npm ci` si todavía no instalaste las herramientas.
 3. Ejecutá `npm run check`.
-4. Guardá los cambios en un commit y subilos a `main` del repositorio de publicación.
+4. Guardá los cambios, incluido el perfil generado `dist/content.js`, en un commit y subilos a `main` del repositorio de publicación con autorización del usuario.
 5. Revisá el resultado de [Publish laboratory](https://github.com/mendezmariano/marianomendez.ar/actions/workflows/pages.yml).
 
-El flujo genera los artículos, ejecuta las pruebas y valida el dibujo. Si todas las comprobaciones pasan, publica únicamente `dist/`. Las propuestas de cambio ejecutan las comprobaciones sin publicar. También podés ejecutar el flujo desde **Actions**, con **Run workflow**.
+El flujo genera los artículos con `npm run build:posts`, comprueba la versión generada con `npm run check:dist` y valida el dibujo. Usa el perfil importado localmente y guardado en Git; el Word original está excluido del repositorio. Si todas las comprobaciones pasan, publica únicamente `dist/`. Las propuestas de cambio ejecutan las comprobaciones sin publicar. También podés ejecutar el flujo desde **Actions**, con **Run workflow**.
 
 En **Settings > Pages**, la fuente de publicación debe ser **GitHub Actions**. El dominio personalizado se configura allí. `dist/CNAME` conserva el nombre del dominio como referencia; GitHub ignora ese archivo cuando publica mediante un flujo de Actions.
 

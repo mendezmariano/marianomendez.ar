@@ -13,7 +13,7 @@ export const targets = Object.freeze({
   cluster: { x: 520, y: 300, bounds: [450, 92, 130, 183], label: 'clúster', description: 'Varias máquinas, una misma pregunta. Las luces parpadean; las respuestas están en proceso.' },
   blog: { x: 695, y: 300, bounds: [631, 149, 94, 100], label: 'terminal de la bitácora', description: 'La terminal principal del clúster. Acá viven las ideas, los experimentos y la bitácora. Podés abrirla haciendo clic sin el modo Mirar.' },
   board: { x: 831, y: 294, bounds: [658, 48, 204, 87], label: 'pizarra', description: 'Hipótesis del día: el café se transforma en código. Falta revisar la demostración.' },
-  cv: { x: 1000, y: 301, bounds: [953, 158, 91, 88], label: 'computadora del currículum', description: 'Mi recorrido profesional, en verde fósforo. El perfil está en preparación.' },
+  cv: { x: 1000, y: 301, bounds: [953, 158, 91, 88], label: 'computadora del currículum', description: 'Mi recorrido profesional, en verde fósforo: formación, docencia, investigación y publicaciones.' },
   plant: { x: 1115, y: 303, bounds: [1082, 166, 66, 118], label: 'planta Ada', description: 'El único proceso del laboratorio que necesita luz solar. Se llama Ada.' },
   workbench: { x: 1320, y: 307, bounds: [1203, 151, 252, 133], label: 'mesa de experimentos', description: 'Un osciloscopio, un circuito a medio armar y una taza. Todo experimento empieza con una pregunta y termina con otra.' },
 });
