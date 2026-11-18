@@ -2,6 +2,7 @@ node_modules/
 .DS_Store
 *.log
 .local/
+.openai/
 *.tar.gz
 # The original CV contains personal data. Publish only the generated profile.
 cv/*.[dD][oO][cC]
