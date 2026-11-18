@@ -1,6 +1,8 @@
 # Publicar el laboratorio en GitHub Pages
 
-El repositorio de publicación es [mendezmariano/marianomendez.ar](https://github.com/mendezmariano/marianomendez.ar). GitHub Pages ya tiene asociado `www.marianomendez.ar` como dominio principal. Falta completar los registros en Cloudflare y la delegación en NIC Argentina para que el dominio sea accesible. El certificado HTTPS sigue pendiente del DNS.
+El repositorio de publicación es [mendezmariano/marianomendez.ar](https://github.com/mendezmariano/marianomendez.ar). GitHub Pages tiene asociado `www.marianomendez.ar` como dominio principal. La delegación en NIC Argentina y los registros de Cloudflare están configurados: el diagnóstico de Pages del 17 de noviembre de 2026 confirma que ambos dominios son válidos para HTTPS y no tienen errores de CAA.
+
+El sitio está disponible en <https://www.marianomendez.ar/>. El certificado incluye el dominio con y sin `www`; se activó **Enforce HTTPS**. La comprobación del 17 de noviembre confirmó por HTTPS que los 10 archivos publicados coinciden con `dist/`. Los pasos de DNS siguientes se conservan como referencia de la configuración existente.
 
 ## Actualizar el sitio
 
@@ -61,7 +63,7 @@ La [guía de delegación de NIC Argentina](https://nic.ar/es/ayuda/instructivos/
 
 Con ambos nombres configurados, GitHub redirige `marianomendez.ar` al dominio principal `www.marianomendez.ar`.
 
-Cuando el DNS sea público, esperá a que GitHub emita el certificado. Activá **Enforce HTTPS** cuando esté disponible.
+Si Pages no emite el certificado pese a indicar que el DNS es válido, la [guía oficial de certificados](https://docs.github.com/en/pages/getting-started-with-github-pages/securing-your-github-pages-site-with-https#troubleshooting-certificate-provisioning-certificate-not-yet-created-error) indica quitar y volver a guardar el mismo dominio para reiniciar la solicitud. Este procedimiento resolvió la emisión el 17 de noviembre de 2026. Después de comprobar HTTPS, se activó **Enforce HTTPS**.
 
 La [guía oficial de dominios personalizados](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site) documenta los registros y la configuración de HTTPS.
 
@@ -74,6 +76,8 @@ npm run verify:deployment -- https://www.marianomendez.ar/
 ```
 
 El último comando compara por SHA-256 la portada, los módulos, la hoja de estilos y los recursos publicados con sus versiones locales. Un error HTTP, de DNS o una diferencia de contenido hace fallar la comprobación. No sustituye la revisión interactiva en navegador.
+
+Después de activar **Enforce HTTPS**, una respuesta HTTP anterior puede permanecer en la caché de GitHub hasta vencer su `max-age`. En la activación del 17 de noviembre, Pages ya informaba HTTPS obligatorio y los recursos redirigían con 301 mientras la portada HTTP conservaba una respuesta de caché de 600 segundos. No es necesario reiniciar la emisión del certificado por esa respuesta temporal.
 
 La dirección inicial de GitHub Pages redirige al dominio personalizado una vez asociado. La siguiente comprobación también depende entonces de que el DNS del dominio funcione:
 
