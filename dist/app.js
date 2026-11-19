@@ -51,6 +51,10 @@ updateCameraControls();
 const terminal = $('#terminal-dialog');
 const help = $('#help-dialog');
 const body = $('#terminal-body');
+const readerControls = $('#reader-controls');
+const readerStorageKey = 'mendez-lab.reader';
+const readerPreferences = readReaderPreferences();
+let readingPostId = null;
 const speech = $('#speech');
 const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
 let speechTimer;
@@ -92,17 +96,98 @@ function moveCamera(x) {
   updateCameraControls();
 }
 
+function readReaderPreferences() {
+  // Storage is optional and may contain values from another version or tab.
+  let saved;
+  try { saved = JSON.parse(localStorage.getItem(readerStorageKey)); } catch {}
+  return {
+    theme: saved?.theme === 'dark' ? 'dark' : 'light',
+    fontSize: [16, 18, 20, 22, 24].includes(saved?.fontSize) ? saved.fontSize : 18,
+  };
+}
+function applyReaderPreferences() {
+  const scrollTop = body.scrollTop;
+  terminal.dataset.readerTheme = readerPreferences.theme;
+  terminal.style.setProperty('--reader-font-size', `${readerPreferences.fontSize / 16}rem`);
+  $('#reader-light').setAttribute('aria-pressed', String(readerPreferences.theme === 'light'));
+  $('#reader-dark').setAttribute('aria-pressed', String(readerPreferences.theme === 'dark'));
+  $('#reader-size').textContent = `${readerPreferences.fontSize} px`;
+  const smaller = $('#reader-smaller');
+  const larger = $('#reader-larger');
+  const focused = document.activeElement;
+  smaller.disabled = readerPreferences.fontSize === 16;
+  larger.disabled = readerPreferences.fontSize === 24;
+  if (smaller.disabled && focused === smaller) larger.focus({ preventScroll: true });
+  if (larger.disabled && focused === larger) smaller.focus({ preventScroll: true });
+  body.scrollTop = scrollTop;
+}
+function saveReaderPreferences() {
+  try { localStorage.setItem(readerStorageKey, JSON.stringify(readerPreferences)); } catch {}
+}
+for (const theme of ['light', 'dark']) $('#reader-' + theme).addEventListener('click', () => {
+  readerPreferences.theme = theme;
+  applyReaderPreferences();
+  saveReaderPreferences();
+});
+for (const [id, step] of [['reader-smaller', -2], ['reader-larger', 2]]) $('#' + id).addEventListener('click', () => {
+  const size = Math.min(24, Math.max(16, readerPreferences.fontSize + step));
+  if (size === readerPreferences.fontSize) return;
+  // Keep the visible block and relative position inside it as text reflows.
+  const top = body.getBoundingClientRect().top;
+  const anchor = [...body.querySelectorAll('.article-header, .article-content > *')]
+    .find(element => element.getBoundingClientRect().bottom > top);
+  const before = anchor?.getBoundingClientRect();
+  readerPreferences.fontSize = size;
+  applyReaderPreferences();
+  if (before?.height > 0) {
+    const after = anchor.getBoundingClientRect();
+    const fraction = Math.max(0, (top - before.top) / before.height);
+    body.scrollTop += after.top + fraction * after.height - Math.max(top, before.top);
+  }
+  saveReaderPreferences();
+});
+$('#back-to-posts').addEventListener('click', () => {
+  const id = readingPostId;
+  showBlog();
+  [...body.querySelectorAll('[data-post]')].find(button => button.dataset.post === id)?.focus();
+});
+function leaveReader() {
+  readingPostId = null;
+  terminal.classList.remove('reader-dialog');
+  delete terminal.dataset.readerTheme;
+  terminal.style.removeProperty('--reader-font-size');
+  terminal.setAttribute('aria-labelledby', 'terminal-title');
+  $('#close-terminal').setAttribute('aria-label', 'Cerrar terminal');
+  readerControls.hidden = true;
+  body.scrollTop = 0;
+}
 function showBlog(){
+  leaveReader();
   $('#terminal-title').textContent='MENDEZ-OS / BITÁCORA';
   body.innerHTML=`<p class="terminal-prompt"><b>visitante@cluster</b>:~/bitacora$ ls</p><h2>Ideas desde el laboratorio.</h2><p class="terminal-subtitle">Experimentos, preguntas y notas sobre ciencias de la computación.</p><div class="post-list">${posts.map((post,index)=>`<button class="post-entry" data-post="${escapeHTML(post.id)}"><span class="post-number">0${index+1}</span><span><span class="post-title">${escapeHTML(post.title)}</span><span class="post-meta">${post.date?`${escapeHTML(post.date)} · `:''}${escapeHTML(post.category)} · ${post.minutes} MIN${post.example?' · EJEMPLO':''}</span></span><span class="post-arrow" aria-hidden="true">↗</span></button>`).join('')}</div><p class="terminal-footer">${posts.length} archivos encontrados. ${posts.length?'Seleccioná uno para leer.':'Todavía no hay artículos publicados.'}<br>${posts.some(post=>post.example)?'Las entradas marcadas como ejemplo muestran el funcionamiento del blog.':''}</p>`;
   body.querySelectorAll('[data-post]').forEach(button=>button.addEventListener('click',()=>showPost(button.dataset.post)));
 }
 function showPost(id){
   const post=posts.find(item=>item.id===id);if(!post)return;
-  body.innerHTML=`<button class="terminal-back" id="back-to-posts">← Volver a la bitácora</button><p class="terminal-prompt"><b>visitante@cluster</b>:~/bitacora$ cat ${escapeHTML(post.id)}.md</p>${post.example?'<span class="demo-badge">ENTRADA DE EJEMPLO</span>':''}<h2>${escapeHTML(post.title)}</h2><p class="post-meta">${post.date?`${escapeHTML(post.date)} · `:''}${escapeHTML(post.category)} · ${post.minutes} MIN DE LECTURA</p><hr class="terminal-rule"><article class="article-content">${post.html}</article><p class="terminal-footer">[ fin del archivo ]</p>`;
-  terminal.scrollTop=0;$('#back-to-posts').addEventListener('click',()=>{showBlog();body.querySelector('[data-post]').focus();});$('#back-to-posts').focus();playTone(310,.035);
+  readingPostId = post.id;
+  terminal.classList.add('reader-dialog');
+  terminal.setAttribute('aria-labelledby', 'article-title');
+  $('#terminal-title').textContent = 'MENDEZ-OS / LECTURA';
+  $('#close-terminal').setAttribute('aria-label', 'Cerrar artículo');
+  readerControls.hidden = false;
+  body.innerHTML=`<div class="reader-page"><header class="article-header">${post.example?'<span class="demo-badge">Entrada de ejemplo</span>':''}<h2 id="article-title">${escapeHTML(post.title)}</h2><p class="post-meta">${post.date?`<time datetime="${escapeHTML(post.date)}">${escapeHTML(post.date)}</time> · `:''}${escapeHTML(post.category)} · ${post.minutes} min de lectura</p></header><article class="article-content" aria-labelledby="article-title">${post.html}</article></div>`;
+  for (const element of body.querySelectorAll('.article-content pre, .article-content table')) {
+    element.tabIndex = 0;
+    if (element.tagName.toLowerCase() === 'pre') {
+      element.setAttribute('role', 'region');
+      element.setAttribute('aria-label', 'Bloque de código');
+    }
+  }
+  applyReaderPreferences();
+  terminal.scrollTop=0;body.scrollTop=0;$('#back-to-posts').focus();playTone(310,.035);
 }
 function showCV(){
+  leaveReader();
   $('#terminal-title').textContent='MENDEZ-OS / CURRICULUM VITAE';
   const commands = ['ayuda', ...profile.sections.map(section => section.id), 'limpiar', 'salir'];
   const date = profile.documentDate?.split('-').reverse().join('/');
@@ -227,7 +312,7 @@ scene.addEventListener('click', event => {
   walkTo(character, point.x, point.y);
 });
 $('#close-terminal').addEventListener('click',()=>terminal.close());
-terminal.addEventListener('close',()=>{returnFocus?.focus();});
+terminal.addEventListener('close',()=>{leaveReader();returnFocus?.focus();});
 $('#help-button').addEventListener('click',()=>{stopWalking();help.showModal();});
 $('#close-help').addEventListener('click',()=>help.close());$('#start-exploring').addEventListener('click',()=>help.close());
 $('#sound-toggle').addEventListener('click',toggleSound);

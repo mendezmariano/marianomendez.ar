@@ -4,11 +4,13 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { posts } from '../dist/posts.js';
 import { profile } from '../dist/content.js';
+import { parsePost } from '../scripts/posts.mjs';
 
 class Element {
   constructor(tag='div') {
-    this.tagName=tag;this.dataset={};this.style={};this.attributes={};this.children=[];this.listeners={};
+    this.tagName=tag;this.dataset={};this.style={setProperty(name,value){this[name]=value;},removeProperty(name){delete this[name];}};this.attributes={};this.children=[];this.listeners={};
     this.textContent='';this.innerHTML='';this.open=false;this.value='384';this.hidden=false;
+    this.scrollTop=0;
     const names=new Set();
     this.classList={add:name=>names.add(name),remove:name=>names.delete(name),toggle:(name,on)=>on?names.add(name):names.delete(name),contains:name=>names.has(name)};
   }
@@ -19,7 +21,7 @@ class Element {
   // Generated controls and content regions needed by the readers are modeled.
   set innerHTML(value) {
     this.markup = value;
-    this.children = [...value.matchAll(/<([a-z][a-z0-9-]*)\b([^>]*)>/g)].filter(([, , attributes]) => /\bid=|\bdata-post=|\bdata-cv-section=/.test(attributes)).map(([, tag, attributes]) => {
+    this.children = [...value.matchAll(/<([a-z][a-z0-9-]*)\b([^>]*)>/g)].filter(([, tag, attributes]) => ['pre', 'table'].includes(tag) || /\bid=|\bdata-post=|\bdata-cv-section=/.test(attributes)).map(([, tag, attributes]) => {
       const child = new Element(tag);
       child.id = attributes.match(/\bid="([^"]+)"/)?.[1];
       const post = attributes.match(/data-post="([^"]+)"/)?.[1];
@@ -30,10 +32,19 @@ class Element {
     });
   }
   get innerHTML() { return this.markup; }
+  get disabled() { return this.isDisabled ?? false; }
+  set disabled(value) {
+    this.isDisabled = value;
+    if (value && globalThis.document?.activeElement === this) {
+      this.focused = false;
+      document.activeElement = null;
+    }
+  }
   querySelectorAll(selector) {
     if (selector === '[data-target]') return this.children.filter(c => c.dataset.target);
     if (selector === '[data-post]') return this.children.filter(c => c.dataset.post);
     if (selector === '[data-cv-section]') return this.children.filter(c => c.dataset.cvSection);
+    if (selector === '.article-content pre, .article-content table') return this.children.filter(c => ['pre', 'table'].includes(c.tagName));
     if (selector.startsWith('#')) return this.children.filter(c => c.id === selector.slice(1));
     return [];
   }
@@ -43,13 +54,13 @@ class Element {
   setPointerCapture(id) { this.pointerId=id; }
   hasPointerCapture(id) { return this.pointerId===id; }
   releasePointerCapture() { this.pointerId=null; }
-  focus() { this.focused=true; }
+  focus() { if(document.activeElement)document.activeElement.focused=false;document.activeElement=this;this.focused=true; }
   showModal() { this.open=true; }
   close() { this.open=false;this.emit('close'); }
   getContext() { return new Proxy({}, {get:(target,key)=>target[key]??(()=>{}),set:(target,key,value)=>(target[key]=value,true)}); }
 }
 let loadNumber=0;
-async function loadApp(t,{reducedMotion=false}={}) {
+async function loadApp(t,{reducedMotion=false,storage}={}) {
   const source=await readFile(new URL('../dist/index.html',import.meta.url),'utf8');
   const elements=new Map([...source.matchAll(/<([a-z]+)[^>]*\bid="([^"]+)"/g)].map(([,tag,id])=>[id,new Element(tag)]));
   const quick=[new Element('button'),new Element('button')];quick[0].dataset.open='blog';quick[1].dataset.open='cv';
@@ -59,7 +70,7 @@ async function loadApp(t,{reducedMotion=false}={}) {
   document.querySelectorAll=selector=>selector==='[data-target]'?elements.get('hotspots').children:selector==='[data-open]'?quick:[];
   const window=new Element();
   let frame,now=0;
-  const globals={document,window,matchMedia:()=>({matches:reducedMotion}),requestAnimationFrame:callback=>{frame=callback;},setTimeout:()=>1,clearTimeout:()=>{},setInterval:()=>1};
+  const globals={document,window,localStorage:storage,matchMedia:()=>({matches:reducedMotion}),requestAnimationFrame:callback=>{frame=callback;},setTimeout:()=>1,clearTimeout:()=>{},setInterval:()=>1};
   const originals=new Map(Object.keys(globals).map(key=>[key,Object.getOwnPropertyDescriptor(globalThis,key)]));
   for(const [key,value] of Object.entries(globals))Object.defineProperty(globalThis,key,{value,configurable:true,writable:true});
   t.after(()=>{for(const [key,descriptor] of originals)if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];});
@@ -191,18 +202,159 @@ test('the reader opens generated Markdown, returns to the list and restores keyb
   const body = app.get('terminal-body');
   const buttons = body.querySelectorAll('[data-post]');
   assert.equal(buttons.length, posts.length);
-  buttons[0].emit('click');
-  assert.ok(body.innerHTML.includes(posts[0].html));
-  assert.ok(body.innerHTML.includes(`${posts[0].id}.md`));
-  assert.match(body.innerHTML, /ENTRADA DE EJEMPLO/);
-  const back = body.querySelector('#back-to-posts');
+  buttons[1].emit('click');
+  assert.ok(body.innerHTML.includes(posts[1].html));
+  assert.match(body.innerHTML, /Entrada de ejemplo/);
+  assert.doesNotMatch(body.innerHTML, /visitante@cluster|fin del archivo/);
+  assert.equal(app.get('terminal-dialog').attributes['aria-labelledby'], 'article-title');
+  const back = app.get('back-to-posts');
   assert.equal(back.focused, true);
   back.emit('click');
   assert.equal(body.querySelectorAll('[data-post]').length, posts.length);
-  assert.equal(body.querySelector('[data-post]').focused, true);
+  assert.equal(body.querySelectorAll('[data-post]')[1].focused, true);
+  assert.equal(app.get('reader-controls').hidden, true);
+  assert.equal(app.get('terminal-dialog').classList.contains('reader-dialog'), false);
   app.get('close-terminal').emit('click');
   assert.equal(app.get('terminal-dialog').open, false);
   assert.equal(app.quick[0].focused, true);
+});
+
+test('articles start as a light notebook and changing preferences preserves the article, focus and scroll', async t => {
+  const app = await loadApp(t);
+  app.quick[0].emit('click');
+  const body = app.get('terminal-body');
+  body.querySelector('[data-post]').emit('click');
+  const terminal = app.get('terminal-dialog');
+  assert.equal(terminal.classList.contains('reader-dialog'), true);
+  assert.equal(terminal.dataset.readerTheme, 'light');
+  assert.equal(terminal.style['--reader-font-size'], '1.125rem');
+  assert.equal(app.get('reader-controls').hidden, false);
+  const title = body.querySelector('#article-title');
+  const content = body.innerHTML;
+  body.scrollTop = 480;
+  for (const id of ['reader-dark', 'reader-larger', 'reader-light']) {
+    const control = app.get(id);
+    control.focus();
+    control.emit('click');
+    assert.equal(control.focused, true);
+    assert.equal(body.scrollTop, 480);
+    assert.equal(body.innerHTML, content);
+    assert.equal(body.querySelector('#article-title'), title);
+  }
+  assert.equal(terminal.dataset.readerTheme, 'light');
+  assert.equal(terminal.style['--reader-font-size'], '1.25rem');
+  assert.equal(app.get('reader-light').attributes['aria-pressed'], 'true');
+  assert.equal(app.get('reader-dark').attributes['aria-pressed'], 'false');
+});
+
+test('reader font controls stop at both limits and keep keyboard focus on an available control', async t => {
+  const app = await loadApp(t);
+  app.quick[0].emit('click');
+  app.get('terminal-body').querySelector('[data-post]').emit('click');
+  const smaller = app.get('reader-smaller');
+  const larger = app.get('reader-larger');
+  smaller.focus();
+  smaller.emit('click');
+  assert.equal(app.get('reader-size').textContent, '16 px');
+  assert.equal(smaller.disabled, true);
+  assert.equal(larger.focused, true);
+  for (let i = 0; i < 6; i++) larger.emit('click');
+  assert.equal(app.get('reader-size').textContent, '24 px');
+  assert.equal(larger.disabled, true);
+  assert.equal(smaller.disabled, false);
+  assert.equal(smaller.focused, true);
+  for (let i = 0; i < 6; i++) smaller.emit('click');
+  assert.equal(app.get('reader-size').textContent, '16 px');
+});
+
+test('resizing text keeps the same relative reading position inside the visible paragraph', async t => {
+  const app = await loadApp(t);
+  app.quick[0].emit('click');
+  const body = app.get('terminal-body');
+  body.querySelector('[data-post]').emit('click');
+  body.scrollTop = 700;
+  body.getBoundingClientRect = () => ({top: 100});
+  const paragraph = {getBoundingClientRect() {
+    const enlarged = app.get('reader-size').textContent === '20 px';
+    const top = 100 + (enlarged ? 650 : 600) - body.scrollTop;
+    const height = enlarged ? 240 : 200;
+    return {top, height, bottom: top + height};
+  }};
+  const query = body.querySelectorAll.bind(body);
+  body.querySelectorAll = selector => selector === '.article-header, .article-content > *' ? [paragraph] : query(selector);
+  app.get('reader-larger').emit('click');
+  assert.equal(body.scrollTop, 770);
+  const rect = paragraph.getBoundingClientRect();
+  assert.equal((100 - rect.top) / rect.height, .5);
+});
+
+test('the reader preserves rich Markdown and gives keyboard access to code and tables', async t => {
+  const source = await readFile(new URL('./fixtures/reader-article.md', import.meta.url), 'utf8');
+  const post = parsePost(source, 'reader-article.md');
+  posts.push(post);
+  t.after(() => posts.pop());
+  const app = await loadApp(t);
+  app.quick[0].emit('click');
+  const body = app.get('terminal-body');
+  body.querySelectorAll('[data-post]').find(button => button.dataset.post === post.id).emit('click');
+  assert.ok(body.innerHTML.includes(post.html));
+  assert.match(body.innerHTML, /<time datetime="2026-11-18">2026-11-18<\/time>/);
+  for (const tag of ['h4', 'ul', 'ol', 'blockquote', 'img', 'pre', 'table']) assert.ok(post.html.includes(`<${tag}`), tag);
+  const regions = body.querySelectorAll('.article-content pre, .article-content table');
+  assert.equal(regions.length, 2);
+  for (const region of regions) assert.equal(region.tabIndex, 0);
+  assert.equal(regions.find(region => region.tagName === 'pre').attributes['aria-label'], 'Bloque de código');
+});
+
+test('reader preferences survive reopening and a new page load without styling the CV or article list', async t => {
+  const values = new Map();
+  const storage = {getItem:key=>values.get(key) ?? null,setItem:(key,value)=>values.set(key,value)};
+  await t.test('choose preferences and open the CV', async t => {
+    const app = await loadApp(t, {storage});
+    app.quick[0].emit('click');
+    app.get('terminal-body').querySelector('[data-post]').emit('click');
+    app.get('reader-dark').emit('click');
+    app.get('reader-larger').emit('click');
+    app.get('close-terminal').emit('click');
+    assert.equal(app.get('terminal-dialog').classList.contains('reader-dialog'), false);
+    assert.equal(app.get('reader-controls').hidden, true);
+    app.quick[1].emit('click');
+    assert.equal(app.get('terminal-dialog').dataset.readerTheme, undefined);
+    assert.equal(app.get('terminal-dialog').style['--reader-font-size'], undefined);
+    assert.equal(app.get('terminal-dialog').attributes['aria-labelledby'], 'terminal-title');
+    assert.ok(app.get('terminal-body').innerHTML.includes(profile.name));
+    app.quick[0].emit('click');
+    assert.equal(app.get('reader-controls').hidden, true);
+    app.get('terminal-body').querySelector('[data-post]').emit('click');
+    assert.equal(app.get('terminal-dialog').dataset.readerTheme, 'dark');
+    assert.equal(app.get('reader-size').textContent, '20 px');
+  });
+  await t.test('reload the page with saved preferences', async t => {
+    const app = await loadApp(t, {storage});
+    app.quick[0].emit('click');
+    app.get('terminal-body').querySelector('[data-post]').emit('click');
+    assert.equal(app.get('terminal-dialog').dataset.readerTheme, 'dark');
+    assert.equal(app.get('reader-size').textContent, '20 px');
+  });
+});
+
+test('invalid or unavailable preference storage falls back safely and controls still work for the session', async t => {
+  const cases = ['invalid json', 'null', '[]', '{"theme":"sepia","fontSize":999}', '{"theme":"light","fontSize":"20"}', '{"fontSize":19}'];
+  const unavailable = {getItem(){throw new Error('Storage blocked');},setItem(){throw new Error('Storage full');}};
+  for (const stored of [...cases, unavailable]) await t.test(String(stored), async t => {
+    const storage = typeof stored === 'string' ? {getItem:()=>stored,setItem(){}} : stored;
+    const app = await loadApp(t, {storage});
+    app.quick[0].emit('click');
+    app.get('terminal-body').querySelector('[data-post]').emit('click');
+    assert.equal(app.get('terminal-dialog').dataset.readerTheme, 'light');
+    assert.equal(app.get('reader-size').textContent, '18 px');
+    app.get('reader-dark').emit('click');
+    app.get('reader-larger').emit('click');
+    app.get('back-to-posts').emit('click');
+    app.get('terminal-body').querySelector('[data-post]').emit('click');
+    assert.equal(app.get('terminal-dialog').dataset.readerTheme, 'dark');
+    assert.equal(app.get('reader-size').textContent, '20 px');
+  });
 });
 
 test('the CV terminal reads imported sections through buttons and accented commands', async t => {
