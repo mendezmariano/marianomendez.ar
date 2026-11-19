@@ -44,6 +44,20 @@
     </div>
     <dialog id="terminal-dialog" class="terminal-dialog" aria-labelledby="terminal-title">
       <div class="terminal-titlebar"><span class="terminal-lights" aria-hidden="true"><i></i><i></i><i></i></span><span id="terminal-title">MENDEZ-OS</span><button id="close-terminal" aria-label="Cerrar terminal">ESC <span>×</span></button></div>
+      <nav id="reader-controls" class="reader-controls" aria-label="Controles de lectura" hidden>
+        <button type="button" id="back-to-posts">Volver a la bitácora</button>
+        <div class="reader-preferences">
+          <div class="reader-control-group" role="group" aria-label="Tema de lectura">
+            <button type="button" id="reader-light" aria-pressed="true">Claro</button>
+            <button type="button" id="reader-dark" aria-pressed="false">Oscuro</button>
+          </div>
+          <div class="reader-control-group" role="group" aria-label="Tamaño del texto">
+            <button type="button" id="reader-smaller" aria-label="Reducir tamaño del texto">A−</button>
+            <output id="reader-size" aria-live="polite" aria-label="Tamaño del texto">18 px</output>
+            <button type="button" id="reader-larger" aria-label="Aumentar tamaño del texto">A+</button>
+          </div>
+        </div>
+      </nav>
       <div class="terminal-body" id="terminal-body"></div>
     </dialog>
     <dialog id="help-dialog" class="help-dialog" aria-labelledby="help-title"><button class="help-close" id="close-help" aria-label="Cerrar ayuda">×</button><p class="eyebrow">MANUAL DEL VISITANTE</p><h2 id="help-title">Tu primera visita.</h2><p>El laboratorio se explora como una aventura gráfica.</p><ul><li>Hacé clic en una computadora para que Mariano se acerque y abra su contenido.</li><li>Seleccioná Mirar y después un objeto para que Mariano lo describa.</li><li>Saludar hace que Mariano se vuelva hacia vos y te salude con la mano.</li><li>Recorré el laboratorio con los botones laterales, la barra de posición, el arrastre horizontal o Shift + rueda. Las flechas del teclado hacen caminar al personaje al enfocar la escena.</li><li>Hacé clic en el suelo para caminar. Las flechas izquierda y derecha lo muestran de perfil; arriba, de espaldas; abajo, de frente.</li><li>Los accesos directos a la bitácora y al currículum abren el contenido al instante.</li></ul><p>Usá Tab y Enter para explorar con teclado, y Escape para cerrar las ventanas. El sonido es opcional.</p><button class="primary-button" id="start-exploring">Volver al laboratorio →</button></dialog>

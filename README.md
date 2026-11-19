@@ -38,6 +38,8 @@ El audio comienza desactivado y se genera en el navegador. La preferencia de mov
 
 El clic directo sobre las terminales abre sus contenidos. Mirar se aplica una sola vez al objeto elegido. Saludar se ejecuta inmediatamente y cancela la caminata pendiente.
 
+Los artículos se leen como un cuaderno dentro del marco de terminal, con tema claro u oscuro y tamaño de texto ajustable entre 16 y 24. El navegador recuerda esas preferencias. La [guía del lector](docs/reader.md) incluye una muestra local para revisar párrafos largos, imágenes, tablas y código.
+
 ## Contenidos y personaje
 
 Cada artículo es un archivo Markdown en `content/posts/`. Para agregar uno:
