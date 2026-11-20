@@ -35,7 +35,7 @@ El [estudio detallado del movimiento](movement-study.md) compara otros 156 fotog
 
 Estas constantes adaptan el video a las dimensiones del laboratorio; no son parámetros extraídos del motor del juego. La animación se detiene al dejar de caminar. La dirección principal del desplazamiento elige entre frente, espalda y ambos perfiles. La vista inicial es frontal y el saludo mantiene esa orientación al terminar.
 
-El saludo es una acción nueva. Dura 2,6 segundos: Mariano mira al visitante, eleva el brazo, mueve la mano y vuelve al reposo. El texto se dirige a quien está frente a la pantalla. Con movimiento reducido se conserva una pose fija y el mensaje.
+El saludo dura 2,6 segundos. Mariano mira al visitante, toma el marco de la máscara y lo aparta con una mano. Mientras sostiene el accesorio completo, saluda con la otra mano y deja ver los ojos, la nariz y la sonrisa. Después vuelve a colocarse la máscara y baja los brazos. La [secuencia del saludo](greeting-sequence.png) muestra estas poses. Con movimiento reducido se conserva una pose fija con el rostro descubierto, la máscara en la mano y el mensaje. Reiniciar el saludo o caminar cancela la pose anterior y restaura la máscara.
 
 ## Cámara y verbos
 
@@ -50,7 +50,7 @@ Se eligió la cámara independiente. La vista lógica mide 768 × 352; el mundo 
 
 Para los verbos se comparó una selección persistente de ambos con una descripción de un solo uso y un saludo inmediato. La segunda opción permite saludar al visitante sin obligarlo a elegir un objeto. Mirar consume la selección después del clic; el clic directo siguiente vuelve a usar las terminales.
 
-`world.js` posee el movimiento, el saludo, los límites y la cámara. `gait.js` define el ciclo, el apoyo de los pies y las articulaciones. `app.js` convierte los eventos del usuario en acciones y mantiene los botones HTML sobre el dibujo. `scene.js` representa ese estado. El saludo cancela destinos pendientes para evitar que se abra una terminal al terminar de saludar.
+`world.js` posee el movimiento, el saludo, los límites y la cámara. `gait.js` define el ciclo, el apoyo de los pies, las articulaciones y las poses del saludo según su tiempo transcurrido. `app.js` convierte los eventos del usuario en acciones y mantiene los botones HTML sobre el dibujo. `scene.js` representa ese estado y dibuja el rostro y la máscara por separado. El saludo cancela destinos pendientes para evitar que se abra una terminal al terminar de saludar.
 
 ## Verificación
 

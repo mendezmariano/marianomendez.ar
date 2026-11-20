@@ -1,7 +1,7 @@
 // Export the same Canvas operations as SVG, including the real camera and poses.
 import { writeFile, mkdir } from 'node:fs/promises';
 import { createRenderer, drawCharacter, PALETTE, RENDER_SCALE } from '../dist/scene.js';
-import { createCharacter, WIDTH, HEIGHT, greet } from '../dist/world.js';
+import { createCharacter, WIDTH, HEIGHT, greet, GREETING_SECONDS } from '../dist/world.js';
 
 import { SVGContext, SVGCanvas, wrap } from './svg-context.mjs';
 
@@ -13,8 +13,32 @@ for(const [name,x] of [['west',0],['center',384],['east',768]]) {
   renderer.render(character,1,false,{x});
   await writeFile(`${output}/${name}.svg`,wrap(canvas.ctx.elements,WIDTH,HEIGHT,RENDER_SCALE));
 }
-greet(character);character.greeting.elapsed=.8;renderer.render(character,1,false,{x:384});
+greet(character);character.greeting.elapsed=1.3;renderer.render(character,1,false,{x:384});
 await writeFile(`${output}/greeting.svg`,wrap(canvas.ctx.elements,WIDTH,HEIGHT,RENDER_SCALE));
+const greetings=new SVGContext();greetings.fillStyle=PALETTE.teal;greetings.fillRect(0,0,880,680);
+const phases=[['INICIO',0],['TOMA LA MÁSCARA',.31],['LA APARTA',.52],['ROSTRO VISIBLE',.8],
+  ['SALUDA',1.3],['SE LA COLOCA',2.13],['REPOSO',GREETING_SECONDS],['MOVIMIENTO REDUCIDO',1.3,true]];
+for(const [index,[label,elapsed,reducedMotion]] of phases.entries()) {
+  const x=index%4*220,y=Math.floor(index/4)*340;
+  greetings.save();greetings.translate(x+124,y+293-321*2);greetings.scale(2,2);
+  drawCharacter(greetings,{...createCharacter(),x:0,greeting:{elapsed}},reducedMotion);greetings.restore();
+  greetings.fillStyle=PALETTE.paper;greetings.font='11px monospace';greetings.fillText(label,x+12,y+313);
+}
+await writeFile(`${output}/greeting-sequence.svg`,wrap(greetings.elements,880,680));
+if(process.argv.includes('--greeting-frames')) {
+  const frames=[];
+  await mkdir(`${output}/greeting-frames`,{recursive:true});
+  // Include a short pause after the action so the loop shows the return to rest.
+  for(let frame=0;frame<96;frame++) {
+    const context=new SVGContext();context.fillStyle=PALETTE.teal;context.fillRect(0,0,280,320);
+    context.save();context.translate(160,293-321*2);context.scale(2,2);
+    drawCharacter(context,{...createCharacter(),x:0,greeting:frame/30<GREETING_SECONDS?{elapsed:frame/30}:null});
+    context.restore();
+    const path=`${output}/greeting-frames/${String(frame).padStart(3,'0')}.svg`;
+    await writeFile(path,wrap(context.elements,280,320));frames.push(path);
+  }
+  await writeFile(`${output}/greeting-frames/frames.json`,JSON.stringify({frames,fps:30},null,2));
+}
 const sprites=new SVGContext();sprites.fillStyle=PALETTE.teal;sprites.fillRect(0,0,960,680);
 for(const [row,facing] of ['right','left','back','front'].entries()) {
   sprites.save();sprites.translate(0,row*170-176);
@@ -40,4 +64,4 @@ Object.entries(PALETTE).forEach(([name,color],index)=>{
   swatches.fillText(name,x+7,y+39);swatches.fillText(color,x+7,y+51);
 });
 await writeFile(`${output}/palette.svg`,wrap(swatches.elements,800,340));
-console.log(`Artwork validated against ${new Set(Object.values(PALETTE)).size} base colors and exported to ${output}: west, center, east, greeting, walk, character, palette. These are artwork renders, not browser screenshots.`);
+console.log(`Artwork validated against ${new Set(Object.values(PALETTE)).size} base colors and exported to ${output}: west, center, east, greeting, greeting-sequence, walk, character, palette. These are artwork renders, not browser screenshots.`);
