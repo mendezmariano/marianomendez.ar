@@ -26,7 +26,7 @@ Para usar `npm run dev`, `npm run build`, `npm test` o `npm run check`, colocá 
 - Hacé clic en el suelo o enfocá la escena y usá las flechas para caminar. Izquierda y derecha muestran el perfil; arriba muestra la espalda; abajo, el frente.
 - Recorré el laboratorio con los botones laterales, la barra de posición, el arrastre horizontal sobre el fondo, el trackpad o Shift + rueda.
 - Seleccioná Mirar y después un objeto para leer su descripción.
-- Pulsá Saludar para que Mariano se vuelva hacia vos y te salude con la mano.
+- Pulsá Saludar para que Mariano se vuelva hacia vos, se quite la máscara y te salude con la cara descubierta. Al terminar vuelve a colocársela.
 - Hacé clic en la terminal central para leer la bitácora.
 - Usá la computadora de la derecha para abrir el currículum en formato terminal.
 - Hacé clic en el clúster, la pizarra o la planta para conocer sus detalles.
@@ -34,7 +34,7 @@ Para usar `npm run dev`, `npm run build`, `npm test` o `npm run check`, colocá 
 - Los accesos directos permiten leer sin esperar la caminata.
 - Usá Tab y Enter para navegar con teclado. Escape cierra las ventanas.
 
-El audio comienza desactivado y se genera en el navegador. La preferencia de movimiento reducido abre los destinos sin caminata, detiene las animaciones ambientales y muestra una pose de saludo fija.
+El audio comienza desactivado y se genera en el navegador. La preferencia de movimiento reducido abre los destinos sin caminata, detiene las animaciones ambientales y muestra una pose de saludo fija con la cara descubierta y la máscara en la mano.
 
 El clic directo sobre las terminales abre sus contenidos. Mirar se aplica una sola vez al objeto elegido. Saludar se ejecuta inmediatamente y cancela la caminata pendiente.
 
@@ -131,7 +131,7 @@ Para una revisión visual, abrí la página en escritorio y móvil. Probá ambas
 
 La fuente ya está incluida. Para regenerarla, instalá `fonttools[woff]` en un entorno Python y ejecutá `python3 scripts/generate-font.py`.
 
-`node scripts/render-scene.mjs` exporta las vistas oeste, central y este, el saludo, las cuatro orientaciones y la caminata a `/tmp/mendez-lab-art/`. Comprueba coordenadas finitas, tamaños válidos y colores declarados. Los renders se obtienen de las mismas operaciones de dibujo que usa el sitio. La [vista central](docs/scene-preview.png), la [caminata y el saludo](docs/walk-preview.png) y la [vista del saludo](docs/greeting-preview.png) son renders del arte, no capturas del navegador.
+`node scripts/render-scene.mjs` exporta las vistas oeste, central y este, el saludo, las cuatro orientaciones y la caminata a `/tmp/mendez-lab-art/`. Comprueba coordenadas finitas, tamaños válidos y colores declarados. Con `--greeting-frames` también exporta 96 fotogramas del saludo a 30 fps y un manifiesto en `greeting-frames/`. Los renders se obtienen de las mismas operaciones de dibujo que usa el sitio. La [vista central](docs/scene-preview.png), la [caminata y el saludo](docs/walk-preview.png), la [vista del saludo](docs/greeting-preview.png) y la [secuencia al quitarse la máscara](docs/greeting-sequence.png) son renders del arte, no capturas del navegador.
 
 Para analizar otra vez las referencias, instalá las herramientas opcionales de autoría. El sitio no las necesita para funcionar. Requieren Python 3, FFmpeg y FFprobe disponibles en el sistema.
 
