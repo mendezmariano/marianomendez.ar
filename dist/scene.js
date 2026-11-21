@@ -151,11 +151,13 @@ function drawRoom(c) {
     const y=113+shelf*46;
     books(c,86,y,16);rect(c,80,y,182,7,P.wood);rect(c,82,y,178,2,P.sand);
   }
-  const [bookX, bookY, bookWidth, bookHeight] = targets.memoryBook.bounds;
-  rect(c,bookX,bookY,bookWidth,bookHeight,P.ink);
-  rect(c,bookX+1,bookY+1,bookWidth-2,bookHeight-2,P.amber);
-  rect(c,bookX+2,bookY+5,bookWidth-4,1,P.cream);
-  rect(c,bookX+2,bookY+bookHeight-5,bookWidth-4,1,P.cream);
+  for(const [id,color] of [['memoryBook',P.amber],['planningBook',P.tealLight]]) {
+    const [bookX, bookY, bookWidth, bookHeight] = targets[id].bounds;
+    rect(c,bookX,bookY,bookWidth,bookHeight,P.ink);
+    rect(c,bookX+1,bookY+1,bookWidth-2,bookHeight-2,color);
+    rect(c,bookX+2,bookY+5,bookWidth-4,1,P.cream);
+    rect(c,bookX+2,bookY+bookHeight-5,bookWidth-4,1,P.cream);
+  }
   text(c,'BIBLIOTECA',125,55,10,P.woodDark);
   framed(c,289,55,107,173,P.navy);
   rect(c,298,65,89,150,P.blue);

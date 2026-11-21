@@ -31,6 +31,7 @@ Para usar `npm run dev`, `npm run build`, `npm test` o `npm run check`, colocá 
 - Usá la computadora de la derecha para abrir el currículum en formato terminal.
 - Hacé clic en el clúster, la pizarra o la planta para conocer sus detalles.
 - En la biblioteca, el libro de lomo dorado de la segunda repisa muestra "Memoria virtual" al pasar el cursor o enfocarlo con el teclado. Abre [el sitio de memoria virtual](https://mendezmariano.github.io/memoria-virtual/) en otra pestaña. Con Mirar, Mariano lo describe.
+- El lomo azul, a la derecha del dorado, muestra "Principios de Planificacion" y abre [el simulador de planificación de CPU](https://raw.githack.com/mendezmariano/planificacion/4bef5f638a2bd559d73be9eb84bc4e288d76d72c/dist/index.html). Usa el enlace de la versión 1.0.0 indicado en el [repositorio del proyecto](https://github.com/mendezmariano/planificacion). El título aparece al pasar el cursor o enfocarlo con el teclado; con Mirar, Mariano lo describe.
 - Los accesos directos permiten leer sin esperar la caminata.
 - Usá Tab y Enter para navegar con teclado. Escape cierra las ventanas.
 
