@@ -1,4 +1,4 @@
-# El laboratorio del Dr. Mariano Mendez
+# El laboratorio del Dr. Mendez
 
 Un blog en español que se recorre como una aventura gráfica de estética retro. El Dr. Mendez camina por un laboratorio de ciencias de la computación con un clúster, terminales y objetos para explorar.
 
@@ -96,7 +96,7 @@ La terminal muestra las secciones del documento mediante botones y comandos. Con
 
 GitHub Pages usa el módulo generado y guardado en Git; no tiene acceso a la carpeta local del usuario. Antes de publicar una actualización del CV, ejecutá `npm run check` e incluí `dist/content.js` en los cambios autorizados. Cambiar el documento local no publica el sitio por sí solo.
 
-Los tres posts incluidos están marcados como ejemplos. El currículum usa los datos del Word proporcionado. El encabezado muestra únicamente "El Laboratorio". Los mensajes aparecen sobre la escena y el control de sonido queda debajo.
+Los tres posts incluidos están marcados como ejemplos. El currículum usa los datos del Word proporcionado. El encabezado muestra "El laboratorio del Dr. Mendez". Los mensajes aparecen sobre la escena y el control de sonido queda debajo.
 
 La habitación y el personaje usan 40 colores base derivados de las referencias, con tonos adicionales para piel y bata. El suavizado añade colores intermedios en los bordes. Mariano tiene una silueta alta y delgada, bata blanca, pelo castaño y una máscara con marcos negros cuadrados, cejas postizas, nariz larga y bigote ancho. El [modelo del personaje](docs/character-preview.png) muestra frente, espalda y ambos perfiles. La caminata avanza según la distancia recorrida, con apoyo fijo del pie, flexión de rodillas y brazos en oposición. El movimiento hacia el fondo es más lento en pantalla. Su dibujo está en `drawCharacter`, dentro de `dist/scene.js`.
 
