@@ -1,10 +1,11 @@
-import { CYCLE_DISTANCE, DEPTH_RATIO } from './gait.js';
+import { CYCLE_DISTANCE, DEPTH_RATIO, GREETING_SECONDS } from './gait.js';
+
+export { GREETING_SECONDS } from './gait.js';
 
 export const WIDTH = 768;
 export const HEIGHT = 352;
 export const WORLD_WIDTH = 1536;
 export const WALK_SPEED = 150;
-export const GREETING_SECONDS = 2.6;
 export const FLOOR = Object.freeze({ left: 30, right: WORLD_WIDTH - 30, top: 286, bottom: 336 });
 export const targets = Object.freeze({
   library: { x: 172, y: 302, bounds: [75, 68, 190, 204], label: 'biblioteca', description: 'Algoritmos, sistemas y algunos libros que todavía tengo pendientes. Esta es la memoria de largo plazo del laboratorio.' },
