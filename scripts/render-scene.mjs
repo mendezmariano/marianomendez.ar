@@ -12,6 +12,10 @@ const canvas=new SVGCanvas();const renderer=createRenderer(canvas);const charact
 for(const [name,x] of [['west',0],['center',384],['east',768]]) {
   renderer.render(character,1,false,{x});
   await writeFile(`${output}/${name}.svg`,wrap(canvas.ctx.elements,WIDTH,HEIGHT,RENDER_SCALE));
+  if(name==='west') {
+    // Crop the real scene at its native double resolution to inspect book spines.
+    await writeFile(`${output}/library.svg`,`<svg xmlns="http://www.w3.org/2000/svg" width="420" height="460" viewBox="136 100 420 460">${canvas.ctx.elements.join('')}</svg>`);
+  }
 }
 greet(character);character.greeting.elapsed=.8;renderer.render(character,1,false,{x:384});
 await writeFile(`${output}/greeting.svg`,wrap(canvas.ctx.elements,WIDTH,HEIGHT,RENDER_SCALE));

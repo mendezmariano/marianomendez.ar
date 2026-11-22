@@ -92,59 +92,66 @@ test('Mirar describes a terminal, then a direct object click opens its contents'
   assert.match(app.get('terminal-body').innerHTML,/Ideas desde el laboratorio/);
 });
 
-test('the library book links to Memoria virtual in a new tab and cancels pending terminal visits', async t => {
-  const app = await loadApp(t);
-  const book = app.object('memoryBook');
-  assert.equal(book.tagName, 'a');
-  assert.equal(book.href, 'https://mendezmariano.github.io/memoria-virtual/');
-  assert.equal(book.target, '_blank');
-  assert.equal(book.rel, 'noopener noreferrer');
-  assert.match(book.attributes['aria-label'], /Memoria virtual.*otra pestaña/);
-  assert.equal(book.hidden, true);
-  app.get('camera-position').value = '0';
-  app.get('camera-position').emit('input');
-  assert.equal(book.hidden, false);
-  app.object('blog').emit('click');
-  let prevented = false;
-  book.emit('click', { preventDefault() { prevented = true; } });
-  app.advance(8);
-  assert.equal(prevented, false);
-  assert.equal(app.get('terminal-dialog').open, false);
-  assert.equal(app.get('speech').classList.contains('hidden'), true);
-});
+for(const [id,title,url] of [
+  ['memoryBook','Memoria virtual','https://mendezmariano.github.io/memoria-virtual/'],
+  ['planningBook','Principios de Planificacion','https://raw.githack.com/mendezmariano/planificacion/4bef5f638a2bd559d73be9eb84bc4e288d76d72c/dist/index.html'],
+]) {
+  test(`${title} opens in a new tab and cancels pending terminal visits`, async t => {
+    const app = await loadApp(t);
+    const book = app.object(id);
+    assert.equal(book.tagName, 'a');
+    assert.equal(book.href, url);
+    assert.equal(book.target, '_blank');
+    assert.equal(book.rel, 'noopener noreferrer');
+    assert.equal(book.attributes['aria-label'], `Abrir ${title} (en otra pestaña)`);
+    assert.equal(book.children[0].textContent, title);
+    assert.equal(book.hidden, true);
+    app.get('camera-position').value = '0';
+    app.get('camera-position').emit('input');
+    assert.equal(book.hidden, false);
+    app.object('blog').emit('click');
+    let prevented = false;
+    book.emit('click', { preventDefault() { prevented = true; } });
+    app.advance(8);
+    assert.equal(prevented, false);
+    assert.equal(app.get('terminal-dialog').open, false);
+    assert.equal(app.get('speech').classList.contains('hidden'), true);
+  });
 
-test('Mirar describes the library book without following its link, then the next click follows it', async t => {
-  const app = await loadApp(t, { reducedMotion: true });
-  const book = app.object('memoryBook');
-  app.get('look-button').emit('click');
-  let prevented = false;
-  book.emit('click', { preventDefault() { prevented = true; } });
-  app.advance(.02);
-  assert.equal(prevented, true);
-  assert.match(app.get('speech').textContent, /Memoria virtual.*otra pestaña/);
-  assert.equal(app.get('look-button').attributes['aria-pressed'], 'false');
-  assert.equal(app.get('terminal-dialog').open, false);
-  prevented = false;
-  book.emit('click', { preventDefault() { prevented = true; } });
-  assert.equal(prevented, false);
-});
+  test(`Mirar describes ${title} without following its link, then the next click follows it`, async t => {
+    const app = await loadApp(t, { reducedMotion: true });
+    const book = app.object(id);
+    app.get('look-button').emit('click');
+    let prevented = false;
+    book.emit('click', { preventDefault() { prevented = true; } });
+    app.advance(.02);
+    assert.equal(prevented, true);
+    assert.ok(app.get('speech').textContent.startsWith(title + '.'));
+    assert.match(app.get('speech').textContent, /otra pestaña/);
+    assert.equal(app.get('look-button').attributes['aria-pressed'], 'false');
+    assert.equal(app.get('terminal-dialog').open, false);
+    prevented = false;
+    book.emit('click', { preventDefault() { prevented = true; } });
+    assert.equal(prevented, false);
+  });
 
-test('pointer and keyboard input on the book do not drag the scene or make Mariano walk', async t => {
-  const app = await loadApp(t);
-  const scene = app.get('scene');
-  const book = app.object('memoryBook');
-  app.get('camera-position').value = '0';
-  app.get('camera-position').emit('input');
-  scene.emit('pointerdown', { target: book, button: 0, pointerId: 1, clientX: 219, clientY: 140 });
-  scene.emit('pointermove', { target: book, pointerId: 1, clientX: 80, clientY: 140 });
-  scene.emit('pointerup', { target: book, pointerId: 1 });
-  assert.equal(app.get('camera-position').value, '0');
-  assert.equal(scene.hasPointerCapture(1), false);
-  app.window.emit('keydown', { target: book, key: 'ArrowLeft' });
-  app.advance(1);
-  app.get('greet-button').emit('click');
-  assert.equal(app.get('camera-position').value, '480');
-});
+  test(`pointer and keyboard input on ${title} do not drag the scene or make Mariano walk`, async t => {
+    const app = await loadApp(t);
+    const scene = app.get('scene');
+    const book = app.object(id);
+    app.get('camera-position').value = '0';
+    app.get('camera-position').emit('input');
+    scene.emit('pointerdown', { target: book, button: 0, pointerId: 1, clientX: 219, clientY: 140 });
+    scene.emit('pointermove', { target: book, pointerId: 1, clientX: 80, clientY: 140 });
+    scene.emit('pointerup', { target: book, pointerId: 1 });
+    assert.equal(app.get('camera-position').value, '0');
+    assert.equal(scene.hasPointerCapture(1), false);
+    app.window.emit('keydown', { target: book, key: 'ArrowLeft' });
+    app.advance(1);
+    app.get('greet-button').emit('click');
+    assert.equal(app.get('camera-position').value, '480');
+  });
+}
 
 test('Saludar addresses the visitor and cancels a terminal opening in progress',async t=>{
   const app=await loadApp(t);
