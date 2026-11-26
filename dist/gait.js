@@ -12,29 +12,16 @@ function easeBetween(start, end, value) {
   const t = Math.max(0, Math.min(1, (value - start) / (end - start)));
   return t * t * (3 - 2 * t);
 }
-const blendPoint = (from, to, amount) => from.map((value, index) => value + (to[index] - value) * amount);
 
-// Reach for the frame, hold the whole disguise aside, then put it back before
-// lowering the hand. The pose depends only on elapsed time, so interruption
-// cannot leave a detached mask behind. Reduced motion holds the reveal pose.
 export function sampleGreeting(elapsed, reducedMotion = false) {
   const progress = reducedMotion ? .5 : elapsed / GREETING_SECONDS;
-  const reach = easeBetween(0, .12, progress) * (1 - easeBetween(.88, 1, progress));
-  const reveal = easeBetween(.12, .29, progress) * (1 - easeBetween(.74, .88, progress));
-  const raised = easeBetween(.29, .40, progress) * (1 - easeBetween(.66, .78, progress));
-  const wave = reducedMotion ? 0 : Math.sin(Math.max(0, elapsed - GREETING_SECONDS * .40) * Math.PI * 5) * 3 * raised;
-  const maskOffset = [-30 * reveal, 36 * reveal];
-  const grip = [-18 + maskOffset[0], -103 + maskOffset[1]];
+  const raised = easeBetween(0, .22, progress) * (1 - easeBetween(.78, 1, progress));
+  const wave = reducedMotion ? 0 : Math.sin(elapsed * Math.PI * 4) * 3 * raised;
   return {
-    reveal, reach, raised, maskOffset,
-    maskArm: {
-      shoulder: [-9, -77],
-      elbow: blendPoint([-11, -62], blendPoint([-22, -88], [-30, -63], reveal), reach),
-      hand: blendPoint([-11, -47], grip, reach),
-    },
+    raised,
     waveArm: {
       shoulder: [9, -77],
-      elbow: blendPoint([11, -62], [20, -71], raised),
+      elbow: [11 + 9 * raised, -62 - 9 * raised],
       hand: [11 + 18 * raised + wave, -47 - 48 * raised],
     },
   };

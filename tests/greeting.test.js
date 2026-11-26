@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { sampleGait, sampleGreeting, GREETING_SECONDS } from '../dist/gait.js';
+import { sampleGreeting, GREETING_SECONDS } from '../dist/gait.js';
 import { createCharacter, greet, stepCharacter, moveWithKeys, walkTo } from '../dist/world.js';
-import { drawCharacter } from '../dist/scene.js';
+import { drawCharacter, PALETTE } from '../dist/scene.js';
 import { SVGContext } from '../scripts/svg-context.mjs';
 
 function drawing(character,reducedMotion=false) {
@@ -11,23 +11,24 @@ function drawing(character,reducedMotion=false) {
   return context.elements;
 }
 
-test('greeting starts and finishes with the mask on and both arms at rest',()=>{
-  const idle=sampleGait(createCharacter());
-  for(const time of [0,GREETING_SECONDS]) {
-    const pose=sampleGreeting(time);
-    assert.equal(pose.reveal,0);
-    assert.ok(pose.maskOffset.every(value=>value===0));
-    assert.deepEqual(pose.maskArm.hand,idle.arms[0].hand);
-    assert.deepEqual(pose.waveArm.hand,idle.arms[1].hand);
+test('the greeting starts and finishes in the normal resting pose',()=>{
+  const character=createCharacter();
+  const idle=drawing(character);
+  greet(character);
+  for(const elapsed of [0,GREETING_SECONDS]) {
+    character.greeting.elapsed=elapsed;
+    assert.deepEqual(drawing(character),idle);
   }
 });
 
-test('the hand grips the frame throughout removal and replacement',()=>{
-  for(let frame=0;frame<=156;frame++) {
-    const pose=sampleGreeting(frame/60);
-    if(pose.reveal>0) {
-      assert.equal(pose.reach,1);
-      assert.deepEqual(pose.maskArm.hand,[-18+pose.maskOffset[0],-103+pose.maskOffset[1]]);
+// The old spectacle frames, moustache and strap shared a single ink in the sprite.
+const disguiseInk = PALETTE.darkest;
+
+test('all four views show Mariano without the disguise at rest and while walking',()=>{
+  for(const facing of ['front','right','back','left']) {
+    for(const walking of [false,true]) {
+      const character={...createCharacter(),facing,walking,stride:.25};
+      assert.ok(drawing(character).every(element=>!element.includes(disguiseInk)),facing);
     }
   }
 });
@@ -36,21 +37,19 @@ test('the face stays clear while the raised hand waves',()=>{
   const hands=[];
   for(let elapsed=1.1;elapsed<=1.7;elapsed+=.05) {
     const pose=sampleGreeting(elapsed);
-    assert.equal(pose.reveal,1);
     assert.equal(pose.raised,1);
-    // The mask's top edge is below the face, and the raised hand is to its right.
-    assert.ok(-118+pose.maskOffset[1]>=-82);
     assert.ok(pose.waveArm.hand[0]>24);
+    assert.ok(pose.waveArm.hand[1]<pose.waveArm.shoulder[1]);
     hands.push(pose.waveArm.hand[0]);
   }
   assert.ok(Math.max(...hands)-Math.min(...hands)>5);
 });
 
-test('reduced motion holds the same uncovered face and mask-in-hand pose',()=>{
+test('reduced motion holds one open-handed greeting pose',()=>{
   const character=createCharacter();greet(character);
   const first=sampleGreeting(0,true),render=drawing(character,true);
-  assert.equal(first.reveal,1);
   assert.equal(first.raised,1);
+  assert.ok(render.every(element=>!element.includes(disguiseInk)));
   for(const elapsed of [.1,.6,1.3,2.5]) {
     character.greeting.elapsed=elapsed;
     assert.deepEqual(sampleGreeting(elapsed,true),first);
@@ -58,21 +57,23 @@ test('reduced motion holds the same uncovered face and mask-in-hand pose',()=>{
   }
 });
 
-test('every greeting frame renders with finite coordinates and the declared palette',()=>{
+test('every greeting frame shows a smooth empty-handed wave in the declared palette',()=>{
   const character=createCharacter();greet(character);
-  let previous;
-  for(let frame=0;frame<=156;frame++) {
+  let previousHand;
+  for(let frame=0;frame<=Math.round(GREETING_SECONDS*60);frame++) {
     character.greeting.elapsed=frame/60;
-    const pose=sampleGreeting(character.greeting.elapsed);
-    assert.ok(drawing(character).length>0);
-    if(previous)for(const arm of ['maskArm','waveArm']) {
-      assert.ok(Math.hypot(...pose[arm].hand.map((value,index)=>value-previous[arm].hand[index]))<5);
+    const {hand}=sampleGreeting(character.greeting.elapsed).waveArm;
+    const elements=drawing(character);
+    assert.ok(elements.length>0);
+    assert.ok(elements.every(element=>!element.includes(disguiseInk)));
+    if(previousHand) {
+      assert.ok(Math.hypot(hand[0]-previousHand[0],hand[1]-previousHand[1])<5);
     }
-    previous=pose;
+    previousHand=hand;
   }
 });
 
-test('finishing, restarting or interrupting the greeting restores the worn disguise',()=>{
+test('finishing, restarting or interrupting a wave returns to the expected pose',()=>{
   const character=createCharacter(),idle=drawing(character);
   greet(character);
   for(let frame=0;frame<180;frame++)stepCharacter(character,1/60);

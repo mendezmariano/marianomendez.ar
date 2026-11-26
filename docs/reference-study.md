@@ -23,9 +23,9 @@ Las imágenes muestran protagonistas delgados con camisa azul y pantalón oscuro
 
 En `Pasted image.png`, la figura ocupa aproximadamente desde la fila 28 hasta la 178. La cabeza con sombrero ocupa cerca de un tercio de esa altura. En otras capturas, la cabeza parece más cercana a un cuarto del cuerpo. Son estimaciones visuales sobre imágenes escaladas, no medidas de los sprites originales.
 
-Mariano conserva una silueta delgada, piernas largas y una cabeza de aproximadamente un tercio de la altura. El dibujo mide unas 126 unidades antes de aplicar la pequeña variación de escala por profundidad. La bata blanca tiene solapas, bolsillo, botones y sombras frías. El archivo `e56c1aa6-3e9f-4d03-8399-2e8f889819e7_1280x720.webp` aporta la referencia explícita de anteojos negros, nariz prominente y bigote.
+Mariano conserva una silueta delgada, piernas largas y una cabeza de aproximadamente un tercio de la altura. El dibujo mide unas 126 unidades antes de aplicar la pequeña variación de escala por profundidad. La bata blanca tiene solapas, bolsillo, botones y sombras frías.
 
-La corrección posterior usa también las cuatro imágenes adjuntas de cara, perfil, espalda y frente con máscara. La [hoja de personaje](character-preview.png) muestra cabello castaño y una mandíbula angular, con la máscara dibujada como accesorio independiente. Los marcos cuadrados, las cejas postizas, la nariz larga y el bigote ancho tienen contornos propios. La vista de espalda conserva las patillas y una banda de sujeción, sin dibujar el rostro a través de la cabeza.
+El rostro que se veía durante el saludo es ahora el rostro habitual de Mariano. El flequillo castaño y la mandíbula angular se reconocen de frente y de perfil. Desde atrás se ven el pelo y las orejas. [Hoja de personaje](character-preview.png).
 
 ## Movimiento observado y adaptación
 
@@ -35,7 +35,7 @@ El [estudio detallado del movimiento](movement-study.md) compara otros 156 fotog
 
 Estas constantes adaptan el video a las dimensiones del laboratorio; no son parámetros extraídos del motor del juego. La animación se detiene al dejar de caminar. La dirección principal del desplazamiento elige entre frente, espalda y ambos perfiles. La vista inicial es frontal y el saludo mantiene esa orientación al terminar.
 
-El saludo dura 2,6 segundos. Mariano mira al visitante, toma el marco de la máscara y lo aparta con una mano. Mientras sostiene el accesorio completo, saluda con la otra mano y deja ver los ojos, la nariz y la sonrisa. Después vuelve a colocarse la máscara y baja los brazos. La [secuencia del saludo](greeting-sequence.png) muestra estas poses. Con movimiento reducido se conserva una pose fija con el rostro descubierto, la máscara en la mano y el mensaje. Reiniciar el saludo o caminar cancela la pose anterior y restaura la máscara.
+El saludo dura 2,6 segundos. Mariano mira al visitante, levanta una mano, la mueve de lado a lado y vuelve a bajarla. Con movimiento reducido mantiene la mano levantada durante el saludo. Una nueva orden de caminar lo interrumpe. [Secuencia del saludo](greeting-sequence.png).
 
 ## Cámara y verbos
 
@@ -50,10 +50,10 @@ Se eligió la cámara independiente. La vista lógica mide 768 × 352; el mundo 
 
 Para los verbos se comparó una selección persistente de ambos con una descripción de un solo uso y un saludo inmediato. La segunda opción permite saludar al visitante sin obligarlo a elegir un objeto. Mirar consume la selección después del clic; el clic directo siguiente vuelve a usar las terminales.
 
-`world.js` posee el movimiento, el saludo, los límites y la cámara. `gait.js` define el ciclo, el apoyo de los pies, las articulaciones y las poses del saludo según su tiempo transcurrido. `app.js` convierte los eventos del usuario en acciones y mantiene los botones HTML sobre el dibujo. `scene.js` representa ese estado y dibuja el rostro y la máscara por separado. El saludo cancela destinos pendientes para evitar que se abra una terminal al terminar de saludar.
+`world.js` posee el movimiento, el saludo, los límites y la cámara. `gait.js` define el ciclo, el apoyo de los pies, las articulaciones y las poses del saludo según su tiempo transcurrido. `app.js` convierte los eventos del usuario en acciones y mantiene los botones HTML sobre el dibujo. `scene.js` dibuja el personaje según su orientación y la pose de sus extremidades. El saludo cancela destinos pendientes para evitar que se abra una terminal al terminar de saludar.
 
 ## Verificación
 
 Las pruebas cubren la cancelación de acciones, el saludo, los límites de ambas alas, el seguimiento y la conversión de clics a distintos tamaños. Las pruebas de interacción cargan `app.js` con dobles de DOM y canvas. Los renders SVG proceden de las operaciones de dibujo reales y se revisan como imágenes.
 
-No hubo navegador conectado durante esta revisión. Los renders no verifican el diseño HTML completo ni sustituyen una prueba manual de ratón, teclado y táctil. Los cambios quedan en local y requieren autorización explícita antes de publicarse.
+La revisión original del movimiento se hizo con renders. El [estado del proyecto](project-status.md#funciones-implementadas) registra la comprobación posterior del personaje en Chromium.

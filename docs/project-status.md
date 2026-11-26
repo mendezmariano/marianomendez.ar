@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-Actualizado el 17 de noviembre de 2026. La tabla de verificación del 6 de noviembre se conserva como registro de la revisión de movimiento.
+La revisión general corresponde al 17 de noviembre de 2026. La tabla de verificación del 6 de noviembre se conserva como registro de la revisión de movimiento.
 
 El Laboratorio funciona como un blog interactivo en español. Se publicó en GitHub Pages desde el repositorio [mendezmariano/marianomendez.ar](https://github.com/mendezmariano/marianomendez.ar). El sitio está disponible en <https://www.marianomendez.ar/>, con certificado válido y contenido verificado el 17 de noviembre. La vista local se inicia con `npm run dev` en <http://127.0.0.1:4173/>. La versión publicada incorpora la importación automática del currículum desde Word.
 
@@ -44,12 +44,14 @@ Verificación: `npm run check` aprueba las 47 pruebas y `node scripts/render-sce
 | --- | --- |
 | Encabezado | Muestra únicamente "El Laboratorio", con espacio compacto. Los mensajes aparecen dentro de la escena. |
 | Laboratorio | Biblioteca, clúster, terminales, pizarra, planta y mesa de experimentos. La cámara recorre la habitación hacia ambos lados. |
-| Personaje | Bata blanca, pelo castaño y máscara con anteojos negros cuadrados, cejas postizas, nariz larga y bigote ancho. Tiene frente, espalda y ambos perfiles. |
+| Personaje | Mariano lleva bata blanca y tiene el pelo castaño. Camina y saluda a cara descubierta. Se lo ve de frente, de espaldas y de ambos perfiles. |
 | Caminata | Clic en el suelo o flechas con la escena enfocada. La orientación sigue el desplazamiento. Las rodillas flexionan y los brazos acompañan a la pierna contraria. El pie de apoyo permanece fijo durante el paso lateral. |
 | Mirar y Saludar | Mirar describe el siguiente objeto elegido. Saludar cancela el destino pendiente, vuelve al personaje hacia el visitante y mueve la mano. |
 | Cámara | Botones laterales, barra de posición, arrastre horizontal, trackpad y Shift + rueda. El desplazamiento manual permite explorar sin mover al personaje. |
 | Lectura | Terminal de bitácora, lector de artículos y currículum en formato terminal. Los accesos directos abren los contenidos sin esperar la caminata. |
 | Accesibilidad y sonido | Controles HTML, navegación con teclado, cierre con Escape y respeto de movimiento reducido. El sonido es opcional y comienza desactivado. |
+
+El 26 de noviembre se verificaron en Chromium la caminata en las cuatro direcciones y el saludo de la versión local. En emulación móvil se comprobó que, con movimiento reducido, Mariano mantiene la mano levantada y después vuelve al reposo. Pasaron las 82 pruebas de `npm run check`.
 
 ## Base técnica
 
@@ -110,7 +112,7 @@ Los comandos se ejecutan desde `mendez-lab/`.
 ## Pendientes
 
 1. Revisar en navegador de escritorio y móvil la caminata, los giros, el saludo y el desplazamiento de cámara. Comprobar las terminales, el foco de teclado y el sonido.
-2. Validar visualmente el personaje y la máscara con el usuario. La revisión automática no confirma la semejanza con las referencias.
+2. Validar con el usuario el aspecto del personaje a cara descubierta.
 3. Reemplazar los tres posts de ejemplo en `content/posts/`.
 
 ## Referencias visuales

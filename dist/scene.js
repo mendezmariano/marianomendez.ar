@@ -218,7 +218,7 @@ function drawRoom(c) {
   text(c,'01',1478,243,9,P.cream);
 }
 
-function drawFrontHead(c, reveal = 0) {
+function drawFrontHead(c) {
   // Angular jaw, ears and swept brown hair follow the supplied front-facing portrait.
   poly(c,[[-14,-109],[-10,-119],[1,-122],[12,-117],[16,-107],[14,-92],[8,-82],[-6,-82],[-13,-92]],P.ink);
   poly(c,[[-12,-107],[-9,-115],[2,-117],[12,-111],[12,-94],[7,-84],[-5,-84],[-11,-93]],P.skin);
@@ -237,29 +237,7 @@ function drawFrontHead(c, reveal = 0) {
     ellipse(c,x-.4,-103.6,.5,.6,P.white);
   }
   line(c,[[0,-102],[-1,-96],[2,-95]],P.skinShadow,1.2);
-  const mouthY = -83 - reveal * 5;
-  line(c,[[-4,mouthY],[-1,mouthY+1],[2,mouthY+1],[5,mouthY-1]],P.red,1.3);
-}
-
-function drawFrontMask(c, worn) {
-  // The accessory has its own silhouette: square black rims, false brows and nose.
-  for(const side of [-1,1]) {
-    const x=side===-1?-18:2;
-    poly(c,[[x+2,-110],[x+14,-110],[x+16,-108],[x+15,-98],[x+12,-95],[x+3,-95],[x,-98],[x,-107]],P.darkest);
-    poly(c,[[x+3,-107],[x+12,-107],[x+13,-105],[x+12,-99],[x+4,-99],[x+3,-101]],P.paper);
-    if(worn) {rect(c,x+7,-105,2.5,5,P.ink);rect(c,x+7,-105,1,1.5,P.white);}
-    line(c,[[x+4,-107],[x+7,-107]],P.white,1.2);
-    const browX=side*10;
-    poly(c,[[browX-7,-112],[browX-6,-116],[browX+5,-115],[browX+7,-111]],P.darkest);
-    for(let i=0;i<4;i++)line(c,[[browX-5+i*3,-113],[browX-6+i*3,-117-(i%2)]],P.darkest,1);
-  }
-  line(c,[[-3,-106],[3,-106]],P.darkest,3);
-  poly(c,[[-3,-105],[3,-105],[6,-91],[5,-88],[-5,-88],[-6,-91]],P.ink);
-  poly(c,[[-2,-104],[2,-104],[5,-92],[3,-89],[-3,-89],[-5,-92]],P.skinShadow);
-  poly(c,[[-1,-103],[1,-103],[3,-92],[1,-90],[-3,-91]],P.blush);
-  // A wide, bristly moustache is visibly attached beneath the false nose.
-  poly(c,[[-4,-92],[-9,-93],[-14,-90],[-16,-85],[-11,-87],[-8,-85],[-3,-87],[0,-89],[3,-87],[8,-85],[11,-87],[16,-85],[14,-90],[9,-93],[4,-92],[2,-90],[-2,-90]],P.darkest);
-  for(const side of [-1,1])for(let i=0;i<3;i++)line(c,[[side*(5+i*3),-90],[side*(8+i*3),-87]],P.gray,.6);
+  line(c,[[-4,-88],[-1,-87],[2,-87],[5,-89]],P.red,1.3);
 }
 
 function drawProfileHead(c) {
@@ -270,19 +248,12 @@ function drawProfileHead(c) {
   poly(c,[[-10,-116],[-6,-122],[-1,-123],[2,-121],[-3,-118],[-6,-112]],P.woodLight);
   line(c,[[1,-122],[6,-121],[11,-116]],P.ochre,2);
   ellipse(c,-7,-101,3.5,5,P.skinShadow);ellipse(c,-6,-100,1.5,3,P.skin);
-  // Temples remain visible all the way to the ear; the nose projects beyond the face.
-  line(c,[[-8,-106],[5,-106]],P.darkest,3);
-  poly(c,[[3,-111],[14,-111],[17,-108],[15,-98],[12,-96],[4,-98]],P.darkest);
-  poly(c,[[6,-108],[13,-108],[14,-105],[12,-100],[6,-101]],P.paper);
-  rect(c,11,-107,2,5,P.ink);rect(c,11,-107,1,1,P.white);
-  poly(c,[[3,-113],[4,-117],[13,-116],[17,-112]],P.darkest);
-  line(c,[[6,-114],[6,-118]],P.darkest,1.2);line(c,[[10,-114],[11,-118]],P.darkest,1.2);
-  poly(c,[[15,-106],[18,-104],[24,-94],[25,-90],[22,-87],[16,-88],[14,-92]],P.ink);
-  poly(c,[[16,-104],[18,-102],[23,-93],[23,-90],[20,-89],[16,-91]],P.skinShadow);
-  poly(c,[[16,-103],[18,-101],[21,-93],[20,-91],[17,-92]],P.blush);
-  poly(c,[[15,-92],[20,-91],[23,-87],[25,-84],[20,-85],[17,-83],[12,-86],[7,-86],[5,-89],[9,-93]],P.darkest);
-  for(let i=0;i<3;i++)line(c,[[10+i*3,-91],[14+i*3,-87]],P.gray,.6);
-  line(c,[[6,-83],[11,-83]],P.red,1.3);
+  line(c,[[5,-108],[8,-109],[11,-108]],P.woodDark,1.3);
+  ellipse(c,8,-103,2.7,1.9,P.paper);
+  ellipse(c,9,-103,1.2,1.7,P.ink);
+  ellipse(c,9.3,-103.6,.5,.6,P.white);
+  line(c,[[14,-99],[12,-97],[10,-97]],P.skinShadow,1.2);
+  line(c,[[5,-89],[7,-88],[11,-89]],P.red,1.3);
 }
 
 function drawBackHead(c) {
@@ -294,8 +265,6 @@ function drawBackHead(c) {
   poly(c,[[4,-120],[10,-116],[11,-107],[7,-110],[5,-115]],P.ochre);
   line(c,[[-10,-106],[-8,-99],[-4,-95]],P.woodLight,2);
   line(c,[[9,-105],[6,-99],[4,-94]],P.woodLight,2);
-  // A narrow retaining band and the frame arms identify the mask from behind.
-  line(c,[[-15,-103],[-9,-101],[0,-100],[9,-101],[15,-103]],P.darkest,2.5);
 }
 
 export function drawCharacter(c, character, reducedMotion = false) {
@@ -323,10 +292,10 @@ export function drawCharacter(c, character, reducedMotion = false) {
   }
   // Only the torso bobs. The support foot stays on the ground throughout stance.
   c.save();c.translate(0,pose.bodyY);
-  const farArm=greetingPose ? greetingPose.maskArm : pose.arms[0];
+  const farArm=pose.arms[0];
   line(c,[farArm.shoulder,farArm.elbow,farArm.hand],P.ink,7);
   line(c,[farArm.shoulder,farArm.elbow,[farArm.hand[0],farArm.hand[1]-1]],P.coatShade,4);
-  if(!greetingPose)ellipse(c,farArm.hand[0],farArm.hand[1]+1,3,4,P.skinShadow);
+  ellipse(c,farArm.hand[0],farArm.hand[1]+1,3,4,P.skinShadow);
   poly(c,[[-11,-81],[-4,-86],[7,-85],[13,-78],[11,-53],[15,-36],[-14,-36],[-11,-60]],P.ink);
   poly(c,[[-10,-79],[-3,-84],[7,-83],[11,-76],[9,-53],[13,-38],[-12,-38],[-9,-61]],P.coat);
   poly(c,[[-9,-77],[-5,-76],[-6,-41],[-11,-40]],P.coatShade);
@@ -344,41 +313,25 @@ export function drawCharacter(c, character, reducedMotion = false) {
     for(const yy of [-63,-55,-47])ellipse(c,3,yy,.8,.8,P.gray);
     rect(c,-6,-63,5,7,P.coatShade);rect(c,-6,-63,5,1,P.white);line(c,[[-3,-66],[-3,-61]],P.blue,1);
   }
-  if(greetingPose) {
-    const {shoulder,elbow,hand}=greetingPose.waveArm;
-    const raised=greetingPose.raised;
-    line(c,[shoulder,elbow,hand],P.ink,7+raised);
-    line(c,[shoulder,elbow,[hand[0],hand[1]-2+6*raised]],P.coat,4+raised);
-    ellipse(c,hand[0],hand[1]+1-raised,3+raised,4+2*raised,P.skin);
-    if(raised>0) {
-      for(let i=0;i<4;i++)line(c,[[hand[0]-3+i*2,hand[1]-2],[hand[0]-3+i*2+(-1+i*.5)*raised,hand[1]-2+(-8+(i%2))*raised]],P.skin,1.7);
-      line(c,[[hand[0]-3,hand[1]],[hand[0]-3-4*raised,hand[1]-4*raised]],P.skin,2);
+  const { shoulder, elbow, hand } = greetingPose?.waveArm ?? pose.arms[1];
+  const [handX, handY] = hand;
+  const raised = greetingPose?.raised ?? 0;
+  line(c, [shoulder, elbow, hand], P.ink, 7 + raised);
+  line(c, [shoulder, elbow, [handX, handY - 2 + 6 * raised]], P.coat, 4 + raised);
+  ellipse(c, handX, handY + 1 - raised, 3 + raised, 4 + 2 * raised, P.skin);
+  if (raised > 0) {
+    for (let finger = 0; finger < 4; finger++) {
+      const baseX = handX - 3 + finger * 2;
+      const tipX = baseX + (finger * .5 - 1) * raised;
+      const tipY = handY - 2 - (8 - finger % 2) * raised;
+      line(c, [[baseX, handY - 2], [tipX, tipY]], P.skin, 1.7);
     }
-  } else {
-    const nearArm=pose.arms[1];
-    line(c,[nearArm.shoulder,nearArm.elbow,nearArm.hand],P.ink,7);
-    line(c,[nearArm.shoulder,nearArm.elbow,[nearArm.hand[0],nearArm.hand[1]-2]],P.coat,4);
-    ellipse(c,nearArm.hand[0],nearArm.hand[1]+1,3,4,P.skin);
+    line(c, [[handX - 3, handY], [handX - 3 - 4 * raised, handY - 4 * raised]], P.skin, 2);
   }
   rect(c,-2,-89,7,7,P.skinShadow);
   if(profile)drawProfileHead(c);
   else if(view === 'back')drawBackHead(c);
-  else {
-    drawFrontHead(c,greetingPose?.reveal ?? 0);
-    c.save();
-    if(greetingPose)c.translate(...greetingPose.maskOffset);
-    drawFrontMask(c,!greetingPose?.reveal);
-    c.restore();
-    if(greetingPose) {
-      const hand=greetingPose.maskArm.hand;
-      ellipse(c,hand[0],hand[1]+1,3,4,P.skinShadow);
-      if(greetingPose.reach>0) {
-        const grip=greetingPose.reach;
-        line(c,[[hand[0],hand[1]-2],[hand[0]+3*grip,hand[1]-2]],P.skin,2);
-        line(c,[[hand[0],hand[1]+2],[hand[0]+2*grip,hand[1]+1]],P.blush,1.4);
-      }
-    }
-  }
+  else drawFrontHead(c);
   c.restore();c.restore();
 }
 
